@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,7 +86,9 @@ Route::get('/recent-posts/{days_ago?}', function($days_ago = 20){
     return 'Posts from ' . $days_ago . ' days ago';
 })->name('posts.recent.index')->middleware('auth');
 
-    Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
+// Auth::routes();
+
+Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
 
     // response json
     Route::get('/responses', function() use($posts) {
@@ -127,6 +130,4 @@ Route::get('/recent-posts/{days_ago?}', function($days_ago = 20){
         // return response()->download(public_path('/tony-stark.jpeg'), 'face.jpg', []); // [] <- this is additional header in third argument
         return response()->download(public_path('/tony-stark.jpeg'), 'face.jpg'); // [] <- this is additional header in third argument
     })->name('download');
-
-
 });
