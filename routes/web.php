@@ -131,3 +131,7 @@ Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
         return response()->download(public_path('/tony-stark.jpeg'), 'face.jpg'); // [] <- this is additional header in third argument
     })->name('download');
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

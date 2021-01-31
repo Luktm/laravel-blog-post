@@ -26,6 +26,8 @@ class LoginController extends Controller
      *
      * @var string
      */
+
+     // ! luk: where I login and redirect to home.blade.php
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
