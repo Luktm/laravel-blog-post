@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/',[HomeController::class, 'home'])
     ->name('home.index');
 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
 Route::get('/contact', [HomeController::class, 'contact'])
     ->name('home.contact');
 
@@ -86,8 +90,6 @@ Route::get('/recent-posts/{days_ago?}', function($days_ago = 20){
     return 'Posts from ' . $days_ago . ' days ago';
 })->name('posts.recent.index')->middleware('auth');
 
-// Auth::routes();
-
 Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
 
     // response json
@@ -132,6 +134,5 @@ Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
     })->name('download');
 });
 
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

@@ -22,6 +22,7 @@ class RegisterController extends Controller
     |
     */
 
+    // ! luk: the route redirect was inside RegistersUsers's showRegistrationForm;
     use RegistersUsers;
 
     /**
