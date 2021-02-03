@@ -19,7 +19,9 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/',[HomeController::class, 'home'])
-    ->name('home.index');
+    ->name('home.index')
+    // ->middleware('auth')
+    ;
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 

@@ -18,7 +18,14 @@ class CreateBlogPostsTable extends Migration
             $table->timestamps();
 
             $table->string('title')->nullable();
-            $table->text('content')->nullable();
+
+            // little hack episode 119
+            if( env('DB_DATABASE') === 'sqlite_testing') {
+                $table->text('content')->nullable();
+            } else {
+                $table->text('content');
+            }
+
         });
     }
 

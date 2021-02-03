@@ -55,8 +55,10 @@ class PostTest extends TestCase
             'content' => 'At least 10 characters'
         ]; // params get from url
 
-        // Post request, run php artisan route:list, it's a post.store
-        $this->post('/posts', $params)
+        // actingAs laravel will treat it as authenticated
+        $this->actingAs($this->user)
+            // Post request, run php artisan route:list, it's a post.store
+            ->post('/posts', $params)
             ->assertStatus(302) // redirect status code is 302
             ->assertSessionHas('status'); // go PostsController.php find flash('status', 'fjdlsjalfs')
 
