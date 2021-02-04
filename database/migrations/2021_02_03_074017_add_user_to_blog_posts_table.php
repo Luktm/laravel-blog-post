@@ -16,7 +16,12 @@ class AddUserToBlogPostsTable extends Migration
         Schema::table('blog_posts', function (Blueprint $table) {
             // nullable will insert null to existing data
             // $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('user_id');
+
+            if( env('DB_DATABASE') === 'sqlite_testing') {
+                $table->unsignedBigInteger('user_id')->default(0);
+            } else {
+                $table->unsignedBigInteger('user_id');
+            }
 
             $table->foreign('user_id')
                 ->references('id')->on('users');
