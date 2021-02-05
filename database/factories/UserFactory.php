@@ -30,4 +30,15 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
         ];
     }
+
+    // laravel overwrite above where array's data was given in the state
+    public function new_user()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'John Doe',
+                'email' => 'john@laravel.com',
+            ];
+        });
+    }
 }

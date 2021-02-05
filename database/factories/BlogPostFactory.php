@@ -29,8 +29,8 @@ class BlogPostFactory extends Factory
     }
 
 
-    // laravel will use suspended provided array, if not provide it will use above
-    public function suspended()
+    // laravel will use new_title provided array, if not provide it will use above
+    public function new_title()
     {
         return $this->state(function (array $attributes) {
             return [

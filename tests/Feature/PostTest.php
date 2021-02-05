@@ -127,7 +127,7 @@ class PostTest extends TestCase
         $post->save();
 
         // see BlogPostFactory.php's supended() method
-        return BlogPost::factory()->suspended()->create();
+        return BlogPost::factory()->new_title()->create();
 
         return $post;
     }
