@@ -18,8 +18,14 @@ class BlogPost extends Model
 
     use HasFactory;
 
+    // hasMany() mean inside (Comment::class) / comment has table has foreign key
     public function comments() {
         return $this->hasMany(Comment::class);
+    }
+
+    // belongsTo() mean this or BlogPost table contain user foreign id column/field
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
     // model event at episode 126, solve on when trying to delete BlogPost from the table which contain comments foreign key

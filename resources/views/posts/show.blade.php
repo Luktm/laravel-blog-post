@@ -18,6 +18,7 @@
 
 {{-- diffForHumans() show how much time passed since  --}}
 <p>Added {{ $post->created_at->diffForHumans() }}</p>
+
 @if(now()->diffInMinutes($post->created_at) < 5)
     <div class="alert alert-info">New!</div>
 @endif
