@@ -9,6 +9,6 @@
     @method('PUT')
     {{-- value={{old('title')}} retrive the old session input--}}
     @include('posts.partials.form')
-    <div><input type="submit" value="Create"></div>
+    <div><input class="btn btn-primary btn-block" type="submit" value="Update"></div>
 </form>
 @endsection

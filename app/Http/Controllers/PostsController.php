@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
 // use Illuminate\Support\Facades\DB;
 
 class PostsController extends Controller
 {
 
     public function __construct(){
+        // auth needed before user can access these page/function
         $this->middleware('auth')
             ->only(['create', 'store', 'edit', 'update', 'destroy']);
     }
@@ -68,6 +71,9 @@ class PostsController extends Controller
      */
     public function create()
     {
+        // see AuthServiceProdider.php & BlogPostPolicy.php
+        // this authorize posts.create was not equivalent to view('post.create)
+        $this->authorize('posts.create');
         return view('posts.create');
     }
 
@@ -131,7 +137,11 @@ class PostsController extends Controller
      */
     public function edit($id)
     {
-        return view('posts.edit', ['post' => BlogPost::findOrFail($id)]) ;
+        $post = BlogPost::findOrFail($id);
+        // from 'posts.update' to 'update', see AuthServiceProvider line 20
+        $this->authorize('update', $post);
+
+        return view('posts.edit', ['post' => $post]) ;
     }
 
     /**
@@ -144,6 +154,19 @@ class PostsController extends Controller
     public function update(StorePost $request, $id)
     {
         $post = BlogPost::findOrFail($id);
+
+        // Check inside Povider->AuthServiceProvider.php see whether
+        // that user is eligible to edit the post base on their id
+        // and use it in update().
+        // if(Gate::denies('update-post', $post)) {
+        //     // abort() function will redirect to error page
+        //     abort(403, "you can't edit this blog post!");
+        // }
+
+        // alternative Gate::denies, find it from AuthServiceProvider and BlogPostPolicy.php
+        $this->authorize('posts.update', $post);
+
+
         $validated = $request->validated(); // return arrary with validated data
         $post->fill($validated); // fill the column name in BlogPost fillable[]
         $post->save();
@@ -164,6 +187,15 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $post = BlogPost::findOrFail($id);
+
+        // if(Gate::denies('delete-post', $post)) {
+        //     // abort() function will redirect to error page
+        //     abort(403, "you can't delete this blog post!");
+        // }
+
+        // alternative Gate::denies, find it from AuthServiceProvider and BlogPostPolicy.php
+        $this->authorize('delete', $post);
+
         $post->delete();
 
         // equivalent to $request->session() as above

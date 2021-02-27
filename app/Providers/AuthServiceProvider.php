@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\BlogPost;
+use App\Models\User;
+use App\Policies\BlogPostPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -13,7 +16,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        'App\Models\Model' => 'App\Policies\ModelPolicy',
+        'App\BlogPost' => 'App\Policies\BlogPostPolicy', // auto assign to $this->registerPolicies(), it omit  $this->authorize('posts.update') to $this->authorize('update')
     ];
 
     /**
@@ -25,6 +29,53 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+
+        // Specific which user can edit which post in global Gate, (User $user, BlogPost $post)'s post was
+        // automatically pass in from Postcontroller.php's update() method
+
+        // Gate::define('update-post', function(User $user, BlogPost $post) {
+        //     return $user->id == $post->user_id;
+        // });
+
+        // Gate::allow('update-post', $post);
+        // $this->authorize('update-post', $post); in PostController
+
+        // Gate::define('delete-post', function(User $user, BlogPost $post) {
+        //     return $user->id == $post->user_id;
+        // });
+
+        // any string pass in bracket, ability can access it
+        // to create blogPostpocily with CRUD in it
+
+        // run 'php artisan make:policy BlogPostPolicy --model=BlogPost'
+
+        // once added go to PostController change $this->authorize()
+        // Gate::define('posts.update', [BlogPostPolicy::class, 'update']);
+        // Gate::define('posts.delete', [BlogPostPolicy::class, 'delete']);
+
+        // alternative from above two posts.update and posts.delete
+        Gate::resource('posts', BlogPostPolicy::class);
+        // posts.create, posts.view, posts.update, posts.delete
+
+        // Sometimes, you may wish to grant all abilities to a specific user.
+        // You may use the before method to define a closure
+        // that is run before all other authorization checks from the above
+        // so admin can delete edit and update all blog post
+        // Gate::before(function($user, $ability){
+        //     // ability allow admin update and delete post
+        //     if($user->is_admin && in_array($ability, ['posts.update'])) {
+        //         return true;
+        //     }
+        // });
+
+
+
+        // after will be ball after Gate::define from above
+        // Gate::after(function($user, $ability, $result){
+        //     // ability allow admin update and delete post
+        //     if($user->is_admin) {
+        //         return true;
+        //     }
+        // });
     }
 }

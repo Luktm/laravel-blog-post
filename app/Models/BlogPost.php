@@ -34,7 +34,8 @@ class BlogPost extends Model
         parent::boot();
 
         // consider it hard delete, mean completely delete from table
-        // unless Comment.php added soft delete with migration
+        // unless Comment.php added soft delete with migration,
+        // it will add deleted_at field instead
         static::deleting(function(BlogPost $blogPost) {
             $blogPost->comments()->delete();
         });
