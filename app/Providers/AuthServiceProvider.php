@@ -49,7 +49,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // run 'php artisan make:policy BlogPostPolicy --model=BlogPost'
 
-        // once added go to PostController change $this->authorize()
+        // once added go to PostController.php change $this->authorize()
         // Gate::define('posts.update', [BlogPostPolicy::class, 'update']);
         // Gate::define('posts.delete', [BlogPostPolicy::class, 'delete']);
 
@@ -61,12 +61,16 @@ class AuthServiceProvider extends ServiceProvider
         // You may use the before method to define a closure
         // that is run before all other authorization checks from the above
         // so admin can delete edit and update all blog post
-        // Gate::before(function($user, $ability){
-        //     // ability allow admin update and delete post
-        //     if($user->is_admin && in_array($ability, ['posts.update'])) {
-        //         return true;
-        //     }
-        // });
+        Gate::before(function($user, $ability){
+            // ability allow admin update and delete post
+            // if($user->is_admin && in_array($ability, ['posts.update'])) {
+            //     return true;
+            // }
+
+            if($user->is_admin && in_array($ability, ['update', 'delete'])) {
+                return true;
+            }
+        });
 
 
 
