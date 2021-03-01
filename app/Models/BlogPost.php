@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\LatestScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,11 +11,11 @@ class BlogPost extends Model
 {
     // protected $table = 'blogposts'
 
-
+    // use SoftDeletes, it create a delete_at column at blogpost table in database
     use SoftDeletes;
 
 
-    protected $fillable = ['title', 'content']; // column, go PostsController store() see BlogPost::create(validtated)
+    protected $fillable = ['title', 'content', 'user_id']; // column, go PostsController store() see BlogPost::create(validtated)
 
     use HasFactory;
 
@@ -32,6 +33,10 @@ class BlogPost extends Model
 
     public static function boot(){
         parent::boot();
+
+        // please find this in LatestScope.php in apply method use for global query orderBy()
+        // this effect will reflect in PostController.php's BlogPost::withCount('column')
+        static::addGlobalScope(new LatestScope);
 
         // consider it hard delete, mean completely delete from table
         // unless Comment.php added soft delete with migration,

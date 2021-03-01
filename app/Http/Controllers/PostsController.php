@@ -60,6 +60,9 @@ class PostsController extends Controller
 
         return view(
             'posts.index',
+            // withCount only fetch the got relation between one another.
+            // if wonder why orderBy desc is globally,
+            // please find in LatestScope.php and BlogPost.php line 39.
             ['posts' => BlogPost::withCount('comments')->get()]
         );
     }
@@ -92,19 +95,21 @@ class PostsController extends Controller
 
         // $request->validate();
 
-        // Custom validator assign to variable with array contain
-        $validated = $request->validated();
+        // Custom validator assign to variable with array contained
+        $validatedData = $request->validated();
+        // get user_id from BlogPost.php fillable and assign user id
+        $validatedData['user_id'] = $request->user()->id;
         $post = new BlogPost();
         // $post->title = $request->input('title');
         // $post->content = $request->input('content');
 
         // Custom example validator layouts.app
-        // $post->title = $validated['title'];
-        // $post->content = $validated['content'];
+        // $post->title = $validatedData['title'];
+        // $post->content = $validatedData['content'];
         // $post->save();
 
         // equivalent as above, also see BlogPost.php fillable fields
-        $post = BlogPost::create($validated);
+        $post = BlogPost::create($validatedData);
 
         //$post2 = BlogPost::make(); // create will save it, make need call save again
         // $post2->save();
@@ -167,8 +172,8 @@ class PostsController extends Controller
         $this->authorize('posts.update', $post);
 
 
-        $validated = $request->validated(); // return arrary with validated data
-        $post->fill($validated); // fill the column name in BlogPost fillable[]
+        $validatedData = $request->validated(); // return arrary with validated data
+        $post->fill($validatedData); // fill the column name in BlogPost fillable[]
         $post->save();
 
         // render status to view
