@@ -16,7 +16,7 @@ class HomeController extends Controller
     {
         // luk: except() contact page will no need auth
         // $this->middleware('auth')->except('contact');
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -38,5 +38,9 @@ class HomeController extends Controller
 
     public function contact() {
         return view('home.contact');
+    }
+
+    public function secret() {
+        return view('home.secret');
     }
 }

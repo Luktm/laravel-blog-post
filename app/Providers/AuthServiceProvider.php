@@ -17,7 +17,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Models\Model' => 'App\Policies\ModelPolicy',
-        'App\BlogPost' => 'App\Policies\BlogPostPolicy', // auto assign to $this->registerPolicies(), it omit  $this->authorize('posts.update') to $this->authorize('update')
+        // auto assign to $this->registerPolicies(),
+        // it omit  $this->authorize('posts.update') to
+        // $this->authorize('update')
+        'App\BlogPost' => 'App\Policies\BlogPostPolicy',
     ];
 
     /**
@@ -29,6 +32,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        // home.secret name is up to us to naming it
+        Gate::define('home.secret', function($user) {
+            return $user->is_admin;
+        });
 
         // Specific which user can edit which post in global Gate, (User $user, BlogPost $post)'s post was
         // automatically pass in from Postcontroller.php's update() method
@@ -67,6 +74,8 @@ class AuthServiceProvider extends ServiceProvider
             //     return true;
             // }
 
+
+            // line 20 added, so the name can be shorten
             if($user->is_admin && in_array($ability, ['update', 'delete'])) {
                 return true;
             }

@@ -29,7 +29,8 @@ class AuthorFactory extends Factory
     // Model factory callbacks
     public function configure() {
         return $this->afterMaking(function(Author $author) {
-            $author->profle()->save(Author::factory()->make());
+            // profile() found from Author.php
+            $author->profile()->save(Author::factory()->make());
         })->afterCreating(function (Author $author) {
             $author->profile()->save(Author::factory()->make());
         });

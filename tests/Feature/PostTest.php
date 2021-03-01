@@ -86,7 +86,9 @@ class PostTest extends TestCase
     }
 
     public function test_update_valid() {
-        $post = $this->create_dummy_blog_post();
+
+        $user = $this->user();
+        $post = $this->create_dummy_blog_post($user);
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
@@ -95,7 +97,8 @@ class PostTest extends TestCase
             'content' => 'Content was changed'
         ];
 
-        $this->put("/posts/{$post->id}", $params)
+        $this->actingAs($user)
+            ->put("/posts/{$post->id}", $params)
             ->assertStatus('302')
             ->assertSessionHas('status');
 
@@ -109,11 +112,13 @@ class PostTest extends TestCase
     }
 
     public function test_delete() {
+        $user = $this->user();
         $post = $this->create_dummy_blog_post();
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
-        $this->delete("/posts/{$post->id}")
+        $this->actingAs($user)
+            ->delete("/posts/{$post->id}")
             ->assertStatus('302')
             ->assertSessionHas('status');
 
@@ -121,14 +126,18 @@ class PostTest extends TestCase
         $this->assertDatabaseMissing('blog_posts', $post->toArray());
     }
 
-    private function create_dummy_blog_post(): BlogPost{ // type
+    private function create_dummy_blog_post($userId = null): BlogPost{ // type
         $post = new BlogPost();
         $post->title = 'New title';
         $post->content = 'Content of the blog post';
         $post->save();
 
         // see BlogPostFactory.php's supended() method
-        return BlogPost::factory()->new_title()->create();
+        return BlogPost::factory()->new_title()->create(
+            [
+                'user_id' => $userId ?? $this->user()->id,
+            ]
+        );
 
         return $post;
     }

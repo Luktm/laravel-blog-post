@@ -30,6 +30,18 @@ Auth::routes();
 Route::get('/contact', [HomeController::class, 'contact'])
     ->name('home.contact');
 
+//name('') can up to us to naming it
+Route::get('/secret', [HomeController::class, 'secret'])
+    ->name('secret')
+    // can:'s middleware for authorization system
+    // middleware force only authorized can visit home.secret else it return 403 error
+    ->middleware('can:home.secret');
+
+    // the post name of the root parameter like
+    // we have our roots for editing deleting posts
+    // ->middleware('can:update.post');
+
+
 // single action controller no need array by calling __invoked
 Route::get('/single', AboutController::class);
 
