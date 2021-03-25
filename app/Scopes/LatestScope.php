@@ -17,7 +17,7 @@ class LatestScope implements Scope{
      */
     public function apply(Builder $builder, Model $model)
     {
-        // created_at existed in blogpost and comment table timestamp
+        // created_at existing column in blogpost and comment table timestamp
         // apply static::addGlobalScope() find in BlogPost.php line 39
         // it will add this part of the query to all the queries related with that model in explicitly
         // $builder->orderBy('created_at', 'desc');

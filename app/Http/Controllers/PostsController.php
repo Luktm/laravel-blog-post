@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -62,8 +63,16 @@ class PostsController extends Controller
             'posts.index',
             // withCount only fetch the got relation between one another.
             // if wonder why orderBy desc is globally,
-            // please find in LatestScope.php and BlogPost.php line 39.
-            ['posts' => BlogPost::withCount('comments')->get()]
+            // global query LatestScope.php and BlogPost.php line 39.
+            // local query scopeLatest in Comment.php
+            [
+                'posts' => BlogPost::latest()->withCount('comments')->get(),
+                // find in BlogPost.php at line 42 scopeMostCommented, but 'scope' will remove automatically
+                'mostCommented' => BlogPost::mostCommented()->take(5)->get(),
+                // find in User.php at line 51
+                'mostActive' => User::withMostBlogPosts()->take(5)->get(),
+                'mostActiveLastMonth' => User::withMostBlogPostsLastMonth()->take(5)->get(),
+            ]
         );
     }
 
@@ -129,8 +138,15 @@ class PostsController extends Controller
     public function show($id)
     {
         // abort_if(!isset($this->posts[$id]), 404);
+        return view('posts.show', [
+            'post' => BlogPost::with('comments')->findOrFail($id)
 
-        return view('posts.show', ['post' => BlogPost::with('comments')->findOrFail($id)]);
+            // scopeLatest in Comment.php fetch comment from new to old
+            // or can do it in BlogPost.php hasMany()->latest()
+            // 'post' => BlogPost::with(['comments' => function ($query) {
+            //     return $query->latest();
+            // }])->findOrFail($id)
+        ]);
 
     }
 

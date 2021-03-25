@@ -5,14 +5,26 @@
 
 {{-- use include in other pages, the properties will auto pass downt to this page --}}
 
-<h3><a href="{{ route('posts.show', ['post' => $post->id]) }}">{{ $post->title }}</a></h3>
+<h3>
+    {{-- softdelete directive, display trash post as well --}}
+    @if ($post->trashed())
+        <del>
+    @endif
+
+    <a class="{{ $post->trashed() ? 'text-muted' : '' }}"
+        href="{{ route('posts.show', ['post' => $post->id]) }}">{{ $post->title }}</a>
+    {{-- softdelete directive, display trash post as well --}}
+    @if ($post->trashed())
+        </del>
+    @endif
+</h3>
 
 <p>
     Added {{ $post->created_at->diffForHumans() }}
     by {{ $post->user->name }}
 </p>
 
-@if($post->comments_count)
+@if ($post->comments_count)
     <p>{{ $post->comments_count }} comments</p>
 @else
     <p> No comments yet!</p>
@@ -28,17 +40,19 @@
 
     {{-- delete ability removed then this will show up --}}
     @cannot('delete', $post)
-        <p>You can't delete this post</p>
+    <p>You can't delete this post</p>
     @endcannot
 
     {{-- only same user id / admin for this post able delete else hide delete button --}}
     {{-- go AuthServiceProvider.php line 20, bcuz it's declared, we can just call delete or posts.delete in Gate::resource('posts') --}}
-    @can('delete', $post)
-        <form class="d-inline" action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST">
-            @csrf
-            @method('DELETE')
-            <input type="submit" value="Delete!" class="btn btn-primary">
-        </form>
-    @endcan
-
+    {{-- softdelete directive, display trash post as well --}}
+    @if (!$post->trashed())
+        @can('delete', $post)
+            <form class="d-inline" action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <input type="submit" value="Delete!" class="btn btn-primary">
+            </form>
+        @endcan
+    @endif
 </div>

@@ -19,8 +19,17 @@
 {{-- diffForHumans() show how much time passed since  --}}
 <p>Added {{ $post->created_at->diffForHumans() }}</p>
 
-@if(now()->diffInMinutes($post->created_at) < 5)
-    <div class="alert alert-info">New!</div>
+@if(now()->diffInMinutes($post->created_at) < 25)
+    {{-- component('import first name blade file') like react import component, second argument was ${{type}} --}}
+
+    {{-- @component('components.badge', ['type' => 'primary']) --}}
+        {{-- pass props but laravel was {{slot}} --}}
+        {{-- Brand new post! --}}
+    {{-- @endcomponent --}}
+
+    {{-- specify full component template name in AppServiceProvider.php --}}
+    @badge(['type' => 'primary'])
+    @endbadge
 @endif
 {{-- @isset($post['has_comments'])
 <div>The post has some comment...using isset</div>
