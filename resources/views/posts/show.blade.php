@@ -13,13 +13,8 @@
 <div>It is an old post... using unless</div>
 @endunless --}}
 
-<h1>{{ $post->title }}</h1>
-<p>{{ $post->content }}</p>
-
-{{-- diffForHumans() show how much time passed since  --}}
-<p>Added {{ $post->created_at->diffForHumans() }}</p>
-
-@if(now()->diffInMinutes($post->created_at) < 25)
+<h1>
+    {{ $post->title }}
     {{-- component('import first name blade file') like react import component, second argument was ${{type}} --}}
 
     {{-- @component('components.badge', ['type' => 'primary']) --}}
@@ -27,10 +22,26 @@
         {{-- Brand new post! --}}
     {{-- @endcomponent --}}
 
-    {{-- specify full component template name in AppServiceProvider.php --}}
-    @badge(['type' => 'primary'])
+    {{-- specify full component template name in AppServiceProvider.php and component folder --}}
+    @badge(['show' => now()->diffInMinutes($post->created_at) < 30])
+        Brand new post!
+        {{-- $slot --}}
     @endbadge
-@endif
+
+</h1>
+<p>{{ $post->content }}</p>
+
+{{-- diffForHumans() show how much time passed since  --}}
+
+{{-- specify full component template name in AppServiceProvider.php and component folder --}}
+@updated(['date' => $post->created_at, 'name' => $post->user->name])
+@endupdated
+
+@updated(['date' => $post->updated_at])
+    Updated
+@endupdated
+
+
 {{-- @isset($post['has_comments'])
 <div>The post has some comment...using isset</div>
 

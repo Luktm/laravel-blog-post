@@ -60,11 +60,12 @@ class User extends Authenticatable
         // withCount will return xxx_xxx_count name, blogPosts equivalent to line 46
         // also can do specific query
         return $query->withCount(['blogPosts' => function (Builder $query) {
-            // episode 148 operator for static class, it is access method fields
+            // episode 148 operator for static class, it is access method fields of filter blogPost
             // helper function called from to, now() mean current time
             $query->whereBetween(static::CREATED_AT, [now()->subMonths(1), now()]);
         }])
-            ->having('blog_posts_count', '>=', 2)
+            // sqlite doesn't like having('blog_posts_count', '>=', 2), we use has() instead
+            ->has('blogPosts', '>=', 2)
             ->orderBy('blog_posts_count', 'desc');
     }
 }

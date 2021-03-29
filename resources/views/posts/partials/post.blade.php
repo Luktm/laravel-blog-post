@@ -19,10 +19,15 @@
     @endif
 </h3>
 
-<p>
+{{-- AuthServiceProvider.php preset updated component --}}
+{{-- <p class="text-muted">
     Added {{ $post->created_at->diffForHumans() }}
     by {{ $post->user->name }}
-</p>
+</p> --}}
+@updated(['date' => $post->created_at, 'name' => $post->user->name])
+{{-- $slot --}}
+@endupdated
+
 
 @if ($post->comments_count)
     <p>{{ $post->comments_count }} comments</p>

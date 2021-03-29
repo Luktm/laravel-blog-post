@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
         // components.badge get from component > badge.blade.ph
         // give it a name and call @badge(['type' => 'primary']) directive
         // @components('components.badge') has to provide path but @badge([]) provide in AppServiceProvider
-        Blade::component('components.badge', 'badge');
+        Blade::aliasComponent('components.badge', 'badge');
+        Blade::aliasComponent('components.updated', 'updated');
+        Blade::aliasComponent('components.card', 'card');
     }
 }
