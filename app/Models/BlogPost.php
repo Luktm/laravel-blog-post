@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class BlogPost extends Model
 {
@@ -58,10 +59,17 @@ class BlogPost extends Model
         parent::boot();
 
         // consider it hard delete, mean completely delete from table
-        // unless Comment.php added soft delete with migration add and run,
+        // unless Comment.php added soft delete with migration added and run,
         // it will add deleted_at field instead
         static::deleting(function(BlogPost $blogPost) {
             $blogPost->comments()->delete();
+        });
+
+        // when the post updating, we can reset the cache from this particular item, so user press edit post, it will reset the cache to avoid conflict
+        static::updating(function(BlogPost $blogPost) {
+            // it get the actual cache key name, such as Cache::remember("blog-post-{$id}") in PostController.php
+            // but here we can read from $blogPost->id
+            Cache::forget("blog-post-{$blogPost->id}");
         });
 
         // restore deleted blogpost contain comment

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -38,11 +39,15 @@ class DatabaseSeeder extends Seeder
         // must be right in order else error when fetch empty data to another class
 
         // set by default to true
-        if($this->command->confirm('Do you want to refresh the database?')) {
+        if ($this->command->confirm('Do you want to refresh the database?')) {
+
             $this->command->call('migrate:refresh');
             $this->command->info('Database was refreshed');
             // then run 'php artisan db:seed'
+
         }
+
+        Cache::tags(['blog-post'])->flush();
 
         $this->call([
             UsersTableSeeder::class,

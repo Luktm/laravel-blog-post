@@ -39,25 +39,30 @@
 
     {{-- only same user id / admin for this post able edit else hide edit button --}}
     {{-- go AuthServiceProvider.php line 20, bcuz it's declared, we can just call update or posts.update --}}
-    @can('update', $post)
-        <a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Edit</a>
-    @endcan
+    @auth
+        @can('update', $post)
+            <a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Edit</a>
+        @endcan
+    @endauth
 
     {{-- delete ability removed then this will show up --}}
     @cannot('delete', $post)
-    <p>You can't delete this post</p>
+        <p>You can't delete this post</p>
     @endcannot
 
     {{-- only same user id / admin for this post able delete else hide delete button --}}
     {{-- go AuthServiceProvider.php line 20, bcuz it's declared, we can just call delete or posts.delete in Gate::resource('posts') --}}
     {{-- softdelete directive, display trash post as well --}}
-    @if (!$post->trashed())
-        @can('delete', $post)
-            <form class="d-inline" action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <input type="submit" value="Delete!" class="btn btn-primary">
-            </form>
-        @endcan
-    @endif
+    {{-- @auth check has authenticatad or not --}}
+    @auth
+        @if (!$post->trashed())
+            @can('delete', $post)
+                <form class="d-inline" action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <input type="submit" value="Delete!" class="btn btn-primary">
+                </form>
+            @endcan
+        @endif
+    @endauth
 </div>

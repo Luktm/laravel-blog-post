@@ -41,6 +41,7 @@
     Updated
 @endupdated
 
+<p>Currently read by {{ $counter }} people</p>
 
 {{-- @isset($post['has_comments'])
 <div>The post has some comment...using isset</div>
