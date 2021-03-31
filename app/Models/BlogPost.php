@@ -23,32 +23,89 @@ class BlogPost extends Model
     use HasFactory;
 
     // hasMany() mean inside (Comment::class) / comment has table has foreign key
-    public function comments() {
+    public function comments()
+    {
         // the latest can be added from here too, alternative is in PostController.php line 136
         return $this->hasMany(Comment::class)->latest();
     }
 
     // belongsTo() mean this or BlogPost table contain user foreign id column/field
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    // this imply will hold multiple model, many to many relation both model have to use "belongsToMany()"
+    public function tags()
+    {
+        // withTimestamps() call, the time declaration will create whenever relation created in database, since CreateBlogPostTable has $table->timestamps();
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+
+        // run "php artisan tinker", all of this was attach many to many relation on episode 169
+        // >>> $tag1 = new Tag();
+        // => App\Models\Tag {#4326}
+        // >>> $tag1->name = "Science";
+        // => "Science"
+        // >>> $tag2 = new App\Models\Tag;
+        // => App\Models\Tag {#4321}
+        // >>> $tag2->name = "Politics";
+        // => "Politics"
+        // >>> $tag1->save();
+        // => true
+        // >>> $tag2->save();
+        // => true
+        // >>> $blogPost = BlogPost::find(1);
+        // // attach tag id to blog_post_tag->tag_id without unique relation id
+        // >>> $blogPost->tags()->attach($tag1);
+        // => null
+        // >>> >>> $blogPost->tags()->attach([$tag1->id, $tag2->id]);
+        // => null
+        // >>> $tag3 = new App\Models\Tag;
+        // => App\Models\Tag {#4338}
+        // >>> $tag3->name = "Sport";
+        // => "Sport"
+        // >>> $tag3->save();
+        // => true
+        // // attach with unique id to blog_post_tag->tag-id
+        // >>> $blogPost->tags()->syncWithoutDetaching([$tag1->id, $tag2->id, $tag3->id]);
+        // => [
+        //      "attached" => [
+        //        5,
+        //      ],
+        //      "detached" => [],
+        //      "updated" => [],
+        //    ]
+        // // sync was like true = !true vice verse attach or detach
+        // >>> $blogPost->tags()->sync([$tag1->id, $tag2->id]);
+        // => [
+        //      "attached" => [],
+        //      "detached" => [
+        //        3 => 5,
+        //      ],
+        //      "updated" => [],
+        //    ]
+
     }
 
     // local query scope only  watch episode 145
     // use in PostController.php at line 66 BlogPost::latest()->withCount('table')->get()
-    public function scopeLatest(Builder $query) {
+    public function scopeLatest(Builder $query)
+    {
         return $query->orderBy(static::CREATED_AT, 'desc');
     }
 
     // php artisan tinker and run
     // BlogsPost::mostCommented()->get()->pluck('comments_count');
-    public function scopeMostCommented(Builder $query) {
+    public function scopeMostCommented(Builder $query)
+    {
         // with count producce comments_count column
         return $query->withCount('comments')->orderBy('comments_count', 'desc');
     }
 
     // model event at episode 126, solve on when trying to delete BlogPost from the table which contain comments foreign key
 
-    public static function boot(){
+    public static function boot()
+    {
 
         // please find this from Scopes folder in apply method use for global query orderBy()
         // this effect will reflect in PostController.php's BlogPost::withCount('column')
@@ -61,12 +118,12 @@ class BlogPost extends Model
         // consider it hard delete, mean completely delete from table
         // unless Comment.php added soft delete with migration added and run,
         // it will add deleted_at field instead
-        static::deleting(function(BlogPost $blogPost) {
+        static::deleting(function (BlogPost $blogPost) {
             $blogPost->comments()->delete();
         });
 
         // when the post updating, we can reset the cache from this particular item, so user press edit post, it will reset the cache to avoid conflict
-        static::updating(function(BlogPost $blogPost) {
+        static::updating(function (BlogPost $blogPost) {
             // it get the actual cache key name, such as Cache::remember("blog-post-{$id}") in PostController.php
             // but here we can read from $blogPost->id
             Cache::forget("blog-post-{$blogPost->id}");
@@ -74,7 +131,7 @@ class BlogPost extends Model
 
         // restore deleted blogpost contain comment
         // where it has relation with that particular comment or comments
-        static::restoring(function(BlogPost $blogPost) {
+        static::restoring(function (BlogPost $blogPost) {
             $blogPost->comments()->restore();
         });
     }

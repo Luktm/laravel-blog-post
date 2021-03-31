@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
         }
 
-        Cache::tags(['blog-post'])->flush();
+        Cache::tags(["blog-post"])->flush();
 
         $this->call([
             UsersTableSeeder::class,
