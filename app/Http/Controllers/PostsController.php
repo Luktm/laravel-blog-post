@@ -83,7 +83,9 @@ class PostsController extends Controller
             // global query LatestScope.php and BlogPost.php line 39.
             // local query scopeLatest in Comment.php
             [
-                'posts' => BlogPost::latest()->withCount('comments')->with('user')->get(),
+                'posts' => BlogPost::latest()->withCount('comments')
+                // with(function inside BlogPost.php) is to reduce query oftentime in a way to save server load
+                    ->with('user')->with("tags")->get(),
                 // find in BlogPost.php at line 42 scopeMostCommented, but 'scope' will remove automatically
                 'mostCommented' => $mostCommented,
                 // find in User.php at line 51
@@ -156,7 +158,8 @@ class PostsController extends Controller
     {
         // this has to be dynamic key else user always see the same page
         $blogPost = Cache::tags(["blog-post"])->remember("blog-post-{$id}", 60, function () use($id){
-            return BlogPost::with('comments')->findOrFail($id);
+             // with(function inside BlogPost.php) is to reduce query oftentime in a way to save server load
+            return BlogPost::with('comments')->with("tags")->with("user")->findOrFail($id);
         });
 
         // epidose 162 store visited page number in post.show in PostController.php

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\PostTagController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -73,6 +74,8 @@ $posts = [
 // only([]) and except([]) will determine which CRUD to use, run "php artisan route:list" to see available CRUD
 Route::resource('posts', PostsController::class);
 // ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+
+Route::get("posts/tag/{tag}", [PostTagController::class, "index"])->name("posts.tags.index");
 
 // use() pass the variable where the anonymous function variable is not set
 // Route::get('/posts', function() use($posts) {

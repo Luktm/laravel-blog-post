@@ -19,18 +19,18 @@
                     {{-- 154 ep, complicated example of conditional rendering, please find it at AppServiceProvider.php --}}
                     {{-- collection and auto loop it inside card.blade.php, only name display out --}}
                     @card(['title' => 'Most Commented'])
-                        @slot('subtitle')
-                            What people are currently talking about
-                        @endslot
-                        @slot('items')
-                            @foreach ($mostCommented as $post)
-                                <li class="list-group-item">
-                                    <a href="{{ route('posts.show', ['post' => $post->id]) }}">
-                                        {{ $post->title }}
-                                    </a>
-                                </li>
-                            @endforeach
-                        @endslot
+                    @slot('subtitle')
+                        What people are currently talking about
+                    @endslot
+                    @slot('items')
+                        @foreach ($mostCommented as $post)
+                            <li class="list-group-item">
+                                <a href="{{ route('posts.show', ['post' => $post->id]) }}">
+                                    {{ $post->title }}
+                                </a>
+                            </li>
+                        @endforeach
+                    @endslot
                     @endcard
                     {{-- <div class="card" style="width: 100%;">
                         <div class="card-body">

@@ -41,6 +41,13 @@
     Updated
 @endupdated
 
+{{--
+    $post->tags was get from BlogPost.php line at 39 without calling tags() function, remember many to many has to create new table associate with origin table with multiple foreign id in it,
+    for instance, "blog_posts" and "tags" table was related,
+    but I rather create "blog_post_tag" table with "blog_post_id" and "tag_id" column foregin key among this table.
+--}}
+@tags(["tags" => $post->tags])@endtags
+
 <p>Currently read by {{ $counter }} people</p>
 
 {{-- @isset($post['has_comments'])

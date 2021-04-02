@@ -30,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         Blade::aliasComponent('components.badge', 'badge');
         Blade::aliasComponent('components.updated', 'updated');
         Blade::aliasComponent('components.card', 'card');
+        Blade::aliasComponent('components.tags', 'tags');
     }
 }
