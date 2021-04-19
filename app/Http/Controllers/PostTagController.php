@@ -17,9 +17,9 @@ class PostTagController extends Controller
         // this will fetch all tag associate with particular blogPost
         return view("posts.index", [
             "posts" => $tag->blogPosts,
-            "mostCommented" => [],
-            "mostActive" => [],
-            "mostActiveLastMonth" => []
+            // "mostCommented" => [],
+            // "mostActive" => [],
+            // "mostActiveLastMonth" => []
             ]
         );
     }

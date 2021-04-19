@@ -64,17 +64,21 @@ class PostsController extends Controller
         // default accept as mins, or you can add now()->addSeconds(10) for only last 10 seconds cache
         // Cache:tags(["key"]) just a parent representative for easy flush away it episode on 165, then remember run "php artisan db:seed"
         // Once added Cache:tags([]) remember go DatabaseSeeder.php add Cache::tags([])->flush(); and run again "php artisan db:seed"
-        $mostCommented = Cache::tags(["blog-post"])->remember('blog-post-commented', 60, function () {
-            return BlogPost::mostCommented()->take(5)->get();
-        });
 
-        $mostActive = Cache::remember('users-most-active', now()->addSeconds(10), function () {
-            return User::withMostBlogPosts()->take(5)->get();
-        });
+        // ATTENTION: CREATE NEW FOLDER CALLED ViewComposers AND MIGRATE ALL mostCommented, mostActive, mostActiveLastMonth THIS TO THAT PAGE
+        // AND FIND THIS IN AppServiceProvider.php at line 37 and ActivityComposer.php and index.blade.php replacement. Please watch episode 173
 
-        $mostActiveLastMonth = Cache::remember('users-most-active-last-month', now()->addSeconds(10), function () {
-            return User::withMostBlogPostsLastMonth()->take(5)->get();
-        });
+        // $mostCommented = Cache::tags(["blog-post"])->remember('blog-post-commented', 60, function () {
+        //     return BlogPost::mostCommented()->take(5)->get();
+        // });
+
+        // $mostActive = Cache::remember('users-most-active', now()->addSeconds(10), function () {
+        //     return User::withMostBlogPosts()->take(5)->get();
+        // });
+
+        // $mostActiveLastMonth = Cache::remember('users-most-active-last-month', now()->addSeconds(10), function () {
+        //     return User::withMostBlogPostsLastMonth()->take(5)->get();
+        // });
 
         return view(
             'posts.index',
@@ -87,10 +91,12 @@ class PostsController extends Controller
                 // with(function inside BlogPost.php) is to reduce query oftentime in a way to save server load
                     ->with('user')->with("tags")->get(),
                 // find in BlogPost.php at line 42 scopeMostCommented, but 'scope' will remove automatically
-                'mostCommented' => $mostCommented,
-                // find in User.php at line 51
-                'mostActive' => $mostActive,
-                'mostActiveLastMonth' => $mostActiveLastMonth,
+
+                // Episode 173, it help to remove hassle passed empty array in PostTagController.php
+                // 'mostCommented' => $mostCommented,
+                // // find in User.php at line 51
+                // 'mostActive' => $mostActive,
+                // 'mostActiveLastMonth' => $mostActiveLastMonth,
             ]
         );
     }
