@@ -38,7 +38,8 @@ was equivalent to @updated() --}}
 
 
 {{--
-    $post->tags was get from BlogPost.php line at 39 without calling tags() function, remember many to many has to create new table associate with origin table with multiple foreign id in it,
+    BlogPost.php line at 39 without calling tags() function, remember many to many has to create new table associate with origin table with multiple foreign id in it,
+    PostController.php line 95 got fetch relation tag from BlogPost
     for instance, "blog_posts" and "tags" table was related,
     but I rather create "blog_post_tag" table with "blog_post_id" and "tag_id" column foregin key among this table.
 --}}

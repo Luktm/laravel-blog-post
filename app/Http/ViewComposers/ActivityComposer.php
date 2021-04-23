@@ -9,15 +9,15 @@ use App\Models\User;
 class ActivityComposer {
     // find in PostController.php line 69, basically it was a replacement
     public function compose(View $view) {
-        $mostCommented = Cache::tags(["blog-post"])->remember('blog-post-commented', 60, function () {
+        $mostCommented = Cache::tags(["blog-post"])->remember('mostCommented', 60, function () {
             return BlogPost::mostCommented()->take(5)->get();
         });
 
-        $mostActive = Cache::remember('users-most-active', now()->addSeconds(10), function () {
+        $mostActive = Cache::remember('mostActive', now()->addSeconds(10), function () {
             return User::withMostBlogPosts()->take(5)->get();
         });
 
-        $mostActiveLastMonth = Cache::remember('users-most-active-last-month', now()->addSeconds(10), function () {
+        $mostActiveLastMonth = Cache::remember('mostActiveLastMonth', now()->addSeconds(10), function () {
             return User::withMostBlogPostsLastMonth()->take(5)->get();
         });
 

@@ -58,10 +58,16 @@
 
         <h4>Comments</h4>
 
+        @include("comments.form")
+
         @forelse($post->comments as $comment)
             <p class="text-muted">
-                {{ $comment->content }}, added {{ $comment->created_at->diffForHumans() }}
+                {{ $comment->content }}
+                {{-- , added {{ $comment->created_at->diffForHumans() }} --}}
             </p>
+            {{-- specify full component template name in AppServiceProvider.php and component folder --}}
+            @updated(['date' => $comment->created_at, 'name' => $comment->user->name])
+            @endupdated
         @empty
             <p>No comments yet!</p>
         @endforelse

@@ -48,6 +48,10 @@ class User extends Authenticatable
         return $this->hasMany(BlogPost::class);
     }
 
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
     // get the most BlogPost by local query, remember scope prefix always omitted to withMostBlogPost
     public function scopeWithMostBlogPosts(Builder $query)
     {

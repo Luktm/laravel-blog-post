@@ -18,7 +18,7 @@
 
 {{-- check got error see Kernel.php and PostsController.php store method
 --}}
-@if ($errors->any())
+{{-- @if ($errors->any())
     <div class="mb-3">
         <ul class="list-group">
             @foreach ($errors->all() as $error)
@@ -28,4 +28,7 @@
             @endforeach
         </ul>
     </div>
-@endif
+@endif --}}
+
+{{-- find this alias at AppServiceProvider.php at line 35 --}}
+@errors @enderrors

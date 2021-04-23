@@ -96,10 +96,18 @@ class BlogPost extends Model
 
     // php artisan tinker and run
     // BlogsPost::mostCommented()->get()->pluck('comments_count');
+    // remember if use in other place, scope should be remove therefore it become mostCommented()
     public function scopeMostCommented(Builder $query)
     {
         // with count producce comments_count column
         return $query->withCount('comments')->orderBy('comments_count', 'desc');
+    }
+
+    public function scopeLatestWithRelations(Builder $query) {
+        return $query->latest()
+            ->withCount('comments')
+            ->with("user")
+            ->with("tags");
     }
 
     // model event at episode 126, solve on when trying to delete BlogPost from the table which contain comments foreign key
@@ -120,13 +128,16 @@ class BlogPost extends Model
         // it will add deleted_at field instead
         static::deleting(function (BlogPost $blogPost) {
             $blogPost->comments()->delete();
+            // remove cache when blogpost was deleted
+            Cache::tags(["blog-post"])->forget("blog-post-{$blogPost->id}");
         });
 
         // when the post updating, we can reset the cache from this particular item, so user press edit post, it will reset the cache to avoid conflict
         static::updating(function (BlogPost $blogPost) {
             // it get the actual cache key name, such as Cache::remember("blog-post-{$id}") in PostController.php
             // but here we can read from $blogPost->id
-            Cache::forget("blog-post-{$blogPost->id}");
+            // in PostController.php because we have declare Cache::tags(["blog-post]) at line 167, before calling forget() the cache, we could possibly call the specify tags again then reset it.
+            Cache::tags(["blog-post"])->forget("blog-post-{$blogPost->id}");
         });
 
         // restore deleted blogpost contain comment

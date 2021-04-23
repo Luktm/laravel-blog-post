@@ -68,15 +68,15 @@ class PostsController extends Controller
         // ATTENTION: CREATE NEW FOLDER CALLED ViewComposers AND MIGRATE ALL mostCommented, mostActive, mostActiveLastMonth THIS TO THAT PAGE
         // AND FIND THIS IN AppServiceProvider.php at line 37 and ActivityComposer.php and index.blade.php replacement. Please watch episode 173
 
-        // $mostCommented = Cache::tags(["blog-post"])->remember('blog-post-commented', 60, function () {
+        // $mostCommented = Cache::tags(["blog-post"])->remember('mostCommented', 60, function () {
         //     return BlogPost::mostCommented()->take(5)->get();
         // });
 
-        // $mostActive = Cache::remember('users-most-active', now()->addSeconds(10), function () {
+        // $mostActive = Cache::remember('mostActive', now()->addSeconds(10), function () {
         //     return User::withMostBlogPosts()->take(5)->get();
         // });
 
-        // $mostActiveLastMonth = Cache::remember('users-most-active-last-month', now()->addSeconds(10), function () {
+        // $mostActiveLastMonth = Cache::remember('mostActiveLastMonth', now()->addSeconds(10), function () {
         //     return User::withMostBlogPostsLastMonth()->take(5)->get();
         // });
 
@@ -87,9 +87,13 @@ class PostsController extends Controller
             // global query LatestScope.php and BlogPost.php line 39.
             // local query scopeLatest in Comment.php
             [
-                'posts' => BlogPost::latest()->withCount('comments')
                 // with(function inside BlogPost.php) is to reduce query oftentime in a way to save server load
-                    ->with('user')->with("tags")->get(),
+                // 'posts' => BlogPost::latest()->withCount('comments')
+                //     ->with('user')->with("tags")->get(),
+
+                // this get from BlogPost.php at line 106
+                'posts' => BlogPost::latestWithRelations()->get()
+
                 // find in BlogPost.php at line 42 scopeMostCommented, but 'scope' will remove automatically
 
                 // Episode 173, it help to remove hassle passed empty array in PostTagController.php
@@ -162,10 +166,18 @@ class PostsController extends Controller
      */
     public function show($id)
     {
+        // Cache::tags() can be a parent tag
         // this has to be dynamic key else user always see the same page
         $blogPost = Cache::tags(["blog-post"])->remember("blog-post-{$id}", 60, function () use($id){
              // with(function inside BlogPost.php) is to reduce query oftentime in a way to save server load
-            return BlogPost::with('comments')->with("tags")->with("user")->findOrFail($id);
+            //  fetech those data to show.blade.php at line 69
+            return BlogPost::with('comments', "tags", "user", "comments.user")
+                // optional
+                // ->with("tags")
+                // ->with("user")
+                // // dot mean nested relationship
+                // ->with("comments.user")
+                ->findOrFail($id);
         });
 
         // epidose 162 store visited page number in post.show in PostController.php

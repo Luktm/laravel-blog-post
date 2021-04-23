@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::aliasComponent('components.updated', 'updated');
         Blade::aliasComponent('components.card', 'card');
         Blade::aliasComponent('components.tags', 'tags');
+        Blade::aliasComponent('components.errors', 'errors');
 
         // find this from ActivityComposer.php, it pass ActivityComposer variable start in line 25 to specify view posts > index.blade.php & posts > partials > show.black.php
         view()->composer(["posts.index", "posts.show"], ActivityComposer::class);
