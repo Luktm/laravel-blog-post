@@ -3,7 +3,8 @@
 @section('title', 'Create the post')
 
 @section('content')
-<form action="{{ route('posts.store') }}", method='POST'>
+{{-- enctype multipart need to add for submit file --}}
+<form action="{{ route('posts.store') }}", method='POST' enctype="multipart/form-data">
     @csrf
     {{-- value={{old('title')}} retrive the old session input--}}
     @include('posts.partials.form')

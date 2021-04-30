@@ -4,7 +4,8 @@
 
 @section('content')
 {{-- pass $post->id come from PostsController--}}
-<form action="{{ route('posts.update', ['post' => $post->id]) }}", method='POST'>
+{{-- enctype multipart need to add for submit file --}}
+<form action="{{ route('posts.update', ['post' => $post->id]) }}", method='POST' enctype="multipart/form-data">
     @csrf
     @method('PUT')
     {{-- value={{old('title')}} retrive the old session input--}}

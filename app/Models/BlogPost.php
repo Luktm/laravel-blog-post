@@ -87,6 +87,10 @@ class BlogPost extends Model
 
     }
 
+    public function image() {
+        return $this->hasOne(Image::class);
+    }
+
     // local query scope only  watch episode 145
     // use in PostController.php at line 66 BlogPost::latest()->withCount('table')->get()
     public function scopeLatest(Builder $query)

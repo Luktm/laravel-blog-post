@@ -32,13 +32,14 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root' => storage_path('app'), // this was located at "storage/app"
         ],
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            // you can create a link storage folder to app/public by running "php artisan storage:link"
+            'root' => storage_path('app/public'), // this was located at "app/public"
+            'url' => env('APP_URL').'/storage', // this changef from .env at line 5
             'visibility' => 'public',
         ],
 

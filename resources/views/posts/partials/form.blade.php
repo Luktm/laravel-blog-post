@@ -16,6 +16,12 @@
     <textarea class="form-control" id="content" name="content">{{ old('content', optional($post ?? null)->content) }}</textarea>
 </div>
 
+{{-- Episode 182 add type="file" remember put in FILESYSTEM_DRIVER=public in .env --}}
+<div class="form-group">
+    <label for="Thumbnail">Thumbnail</label>
+    <input id="title" type="file" name="thumbnail" class="form-control-file">
+</div>
+
 {{-- check got error see Kernel.php and PostsController.php store method
 --}}
 {{-- @if ($errors->any())

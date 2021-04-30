@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
+use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 // use Illuminate\Support\Facades\DB;
 
@@ -137,7 +139,6 @@ class PostsController extends Controller
         $validatedData = $request->validated();
         // get user_id from BlogPost.php fillable and assign user id
         $validatedData['user_id'] = $request->user()->id;
-        $post = new BlogPost();
         // $post->title = $request->input('title');
         // $post->content = $request->input('content');
 
@@ -147,15 +148,53 @@ class PostsController extends Controller
         // $post->save();
 
         // equivalent as above, also see BlogPost.php fillable fields
-        $post = BlogPost::create($validatedData);
+        $blogPost = BlogPost::create($validatedData);
 
+        // display request object from form.blade.php multipart/form-data's thumbnail input tag
+        // dump($request->hasFile("thumbnail"));
+        // die; // stop here
+
+        // $hasFile = $request->hasFile("thumbnail");
+        // dump($hasFile);
+        if($request->hasFile("thumbnail")){
+            // store in thumbnail folder
+            $path = $request->file("thumbnail")->store("thumbnails"); // it will return path name to be stored, and run "php artisan make:model Image --migration"
+            // dump($file);
+            // dump($file->getClientMimeType());
+            // // what extension specify of that file
+            // dump($file->getClientOriginalExtension());
+
+            // // create thumbnail folder store it into storage folder > filesystem.php config from .env last line code
+            // dump($file->store("thumbnails"));
+
+            // // episode 184
+            // dump(Storage::disk("public")->put($file, "thumbnails"));
+
+            // // storeAs able to set a custom name such as "thumbnails/31.jpg" but it didn't contain any additional information get from filesystem.php
+            // $name1 = $file->storeAs("thumbnails", $post->id . "." . $file->guessExtension());
+
+            // // Storage::disk("local") was save in local and was set in the filesystem.php at line 35, something like storage/app/thumbnails
+            // $name2 = Storage::disk("local")->put($post->id . "." . $file->guessExtension(), "thumbnails");
+
+            // dump(Storage::url($name1)); // copy this url and paste in new tab, it will display the image only by run "php artisan storage:link" to create a link itself to app/public
+            // dump(Storage::path($name2));
+            // therefore, at filesystems.php public->url->APP_URL has to change in .env at line 5
+
+            // image() function get from blogPost.php and save will  create a blog post and image will be created with blog_post_id column corresponding to created blog post id
+            $blogPost->image()->save(
+                // string path url will be created and save into path column for image table
+                Image::create(["path" => $path])
+            );
+        }
+        // die;
         //$post2 = BlogPost::make(); // create will save it, make need call save again
         // $post2->save();
 
         // can render in view layout.app about status
         $request->session()->flash('status', 'The blog post was created');
 
-        return redirect()->route('posts.show', ['post' => $post->id]);
+        // route to web.php > posts.show || App\Http\Controllers\PostsController@show
+        return redirect()->route('posts.show', ['post' => $blogPost->id]);
     }
 
     /**
@@ -169,8 +208,8 @@ class PostsController extends Controller
         // Cache::tags() can be a parent tag
         // this has to be dynamic key else user always see the same page
         $blogPost = Cache::tags(["blog-post"])->remember("blog-post-{$id}", 60, function () use($id){
-             // with(function inside BlogPost.php) is to reduce query oftentime in a way to save server load
-            //  fetech those data to show.blade.php at line 69
+             // with() is to reduce query oftentime in a way to save server load
+            //  fetch those relation data wherej written functions in BlogPost.php and pass into show.blade.php at line 69
             return BlogPost::with('comments', "tags", "user", "comments.user")
                 // optional
                 // ->with("tags")
