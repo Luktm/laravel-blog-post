@@ -126,6 +126,8 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    // don't forget StorePost <input name="thumbnail"/> was inside to validate file type
     public function store(StorePost $request)
     {
         // validator can be pipe to avoid error page
@@ -319,6 +321,28 @@ class PostsController extends Controller
 
         $validatedData = $request->validated(); // return arrary with validated data
         $post->fill($validatedData); // fill the column name in BlogPost fillable[]
+
+        // check has thumbnail file, update() post can actually store the as well same as store()
+        if($request->hasFile("thumbnail")) {
+            $path = $request->file("thumbnail")->store("thumbnails");
+
+            // check if the post has already have image
+            if($post->image) {
+                // delete old image, but soft delete it, go to BlogPost.php at boot()'s static::deleting and enable it at line 137 "$blogPost->image()->delete()"
+                Storage::delete($post->image->path);
+                // assign new image
+                $post->image->path = $path;
+                // save image
+                $post->image->save();
+            } else {
+                $post->image()->save(
+                    Image::create(["path" => $path])
+                );
+            }
+
+
+        }
+
         $post->save();
 
         // render status to view

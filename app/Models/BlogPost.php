@@ -132,6 +132,10 @@ class BlogPost extends Model
         // it will add deleted_at field instead
         static::deleting(function (BlogPost $blogPost) {
             $blogPost->comments()->delete();
+
+            // enable to PostController.php at line 330 Storage::delete() method
+            // $blogPost->image()->delete();
+
             // remove cache when blogpost was deleted
             Cache::tags(["blog-post"])->forget("blog-post-{$blogPost->id}");
         });

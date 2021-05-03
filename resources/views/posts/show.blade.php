@@ -14,7 +14,14 @@
 @endunless --}}
 <div class="row">
     <div class="col-8">
-        <h1>
+
+        {{-- post->image get from blogpost.php image() and url was from blogpost.php->image(from Image.php)->url() --}}
+        @if($post->image)
+            <div style="background-image: url('{{ $post->image->url() }}'); min-height: 500px; color: white; text-align: center; background-attachment: fixed;">
+                <h1 style="padding-top: 100px; text-shadow: 1px 2px #000;">
+        @else
+            <h1>
+        @endif
             {{ $post->title }}
             {{-- component('import first name blade file') like react import component, second argument was ${{type}} --}}
 
@@ -28,9 +35,22 @@
                 Brand new post!
                 {{-- $slot --}}
             @endbadge
-
-        </h1>
+        @if($post->image)
+                </h1>
+            </div>
+        @else
+            </h1>
+        @endif
         <p>{{ $post->content }}</p>
+
+        {{-- image->path get from BlogPost.php image() function then call specify path --}}
+        {{-- <img src="http://127.0.0.1:8000/{{ $post->image->path }}" alt="">
+        <img src="{{ asset($post->image->path) }}"> --}}
+        {{-- to use Storage facade, it must configure in .env FILESYSTEM_DRIVER=s3 or public --}}
+        {{-- <img src="{{ Storage::url($post->image->path) }}"> --}}
+
+        {{-- get from Image.php which associated with BlogPost.php's image() --}}
+        {{-- <img src="{{ $post->image->url() }}"> --}}
 
         {{-- diffForHumans() show how much time passed since  --}}
 
