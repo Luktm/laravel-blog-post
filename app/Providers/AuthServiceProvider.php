@@ -21,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
         // it omit  $this->authorize('posts.update') to
         // $this->authorize('update')
         'App\BlogPost' => 'App\Policies\BlogPostPolicy',
+        'App\User' => 'App\Policies\UserPolicy', // and go web.php write Route.resource("users", )
     ];
 
     /**

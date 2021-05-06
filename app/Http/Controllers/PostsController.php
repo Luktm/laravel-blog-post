@@ -116,7 +116,7 @@ class PostsController extends Controller
     {
         // see AuthServiceProdider.php & BlogPostPolicy.php
         // this authorize posts.create was not equivalent to view('post.create)
-        $this->authorize('posts.create');
+        $this->authorize('posts.create'); // from BlogPostPolicy.php
         return view('posts.create');
     }
 
@@ -291,7 +291,7 @@ class PostsController extends Controller
     {
         $post = BlogPost::findOrFail($id);
         // from 'posts.update' to 'update', see AuthServiceProvider line 20
-        $this->authorize('update', $post);
+        $this->authorize('update', $post); // authorize certain action before run the next line
 
         return view('posts.edit', ['post' => $post]) ;
     }

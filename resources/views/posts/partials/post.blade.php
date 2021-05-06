@@ -24,7 +24,8 @@
     Added {{ $post->created_at->diffForHumans() }}
     by {{ $post->user->name }}
 </p> --}}
-@updated(['date' => $post->created_at, 'name' => $post->user->name])
+{{-- BlogPost.php has relation with user table, so it can call $post->user->name --}}
+@updated(['date' => $post->created_at, 'name' => $post->user->name, "userId" => $post->user->id])
 {{-- $slot("data", ["date" => $post->created_at])
 
     and

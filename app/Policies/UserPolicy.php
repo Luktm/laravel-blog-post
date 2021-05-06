@@ -2,12 +2,16 @@
 
 namespace App\Policies;
 
-use App\Models\BlogPost;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-// * run "php artisan make:policy BlogPostPolicy --model=User"
-class BlogPostPolicy
+// * run "php artisan make:policy UserPolicy --model=User"
+// * from web.php and then run "php artisan route:list" On URI column, there will be wild cards {user} pass into view(User $user)
+// * Route::resource("users", UserController::class)->only(["show", "edit", "update"]);
+
+// ? remember this must be register in AuthServiceProvider at line 18
+
+class UserPolicy
 {
     use HandlesAuthorization;
 
@@ -26,12 +30,13 @@ class BlogPostPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function view(User $user, BlogPost $blogPost)
+    public function view(User $user, User $model)
     {
-        //
+        // * everyone can view the user
+        return true;
     }
 
     /**
@@ -42,56 +47,59 @@ class BlogPostPolicy
      */
     public function create(User $user)
     {
-        // not define mean not allow perform any action
-        return true;
+        // * no one can create a users
+        return false;
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function update(User $user, BlogPost $blogPost)
+    public function update(User $user, User $model)
     {
-        // * update user itself blogpost
-        return $user->id == $blogPost->user_id;
+        // * when user want to update their avatar, only user itself can update
+        return $user->id == $model->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function delete(User $user, BlogPost $blogPost)
+    public function delete(User $user, User $model)
     {
-        return $user->id == $blogPost->user_id;
+        // * no one can delete user so we return false
+        return false;
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function restore(User $user, BlogPost $blogPost)
+    public function restore(User $user, User $model)
     {
-        //
+        // * we do not use softdelete so false
+        return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function forceDelete(User $user, BlogPost $blogPost)
+    public function forceDelete(User $user, User $model)
     {
-        //
+        // * no one can delete
+        return false;
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PostTagController;
 use App\Http\Controllers\PostCommentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -80,6 +81,7 @@ Route::get("posts/tag/{tag}", [PostTagController::class, "index"])->name("posts.
 
 // only store function will be use, and resource("give a name")
 Route::resource("posts.comments", PostCommentController::class)->only(["store"]);
+Route::resource("users", UserController::class)->only(["show", "edit", "update"]);
 
 // use() pass the variable where the anonymous function variable is not set
 // Route::get('/posts', function() use($posts) {
