@@ -3,7 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+// php artisan make:migration add_user_to_blog_posts_table --table=blog_posts // --table=users mean it will bind to Schema::table("blog_posts")
+// php artisan make:migration add_user_to_blog_posts_table #mean it will add user_id column into blog_post table
 class AddUserToBlogPostsTable extends Migration
 {
     /**

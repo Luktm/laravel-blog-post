@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+// php artisan make:migration create_blog_posts_table
+// create mean create a new table(not yet exist table in database)
 class CreateBlogPostsTable extends Migration
 {
     /**

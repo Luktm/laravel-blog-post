@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+// php artisan make:migration add_cascade_delete_to_comment_table # cascade mean it will delete those has foreign key data where it bind with comment table
+// for example if i delete one comment has blog_post_id, it will skew up blog_post table relation betwen comment table
 class AddCascadeDeleteToCommentsTable extends Migration
 {
     /**
