@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\ActivityComposer;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191); // from add_polymorphic_to_image_table
         // components.badge get from component > badge.blade.ph
         // give it a name and call @badge(['type' => 'primary']) directive
         // @components('components.badge') has to provide path but @badge([]) provide in AppServiceProvider
