@@ -52,6 +52,14 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    // episode 196, since created new AddPolymorphToImagesTable migration, blog_post table and user table use the same image table by running "php artisan make:migration AddPolymorphToImagesTable"
+    // which contain imageable_id and imageable_type, so hasOne() got to change to morphOne();
+    public function image() {
+        // return $this->hasOne(Image::class);
+        return $this->morphOne(Image::class, "imageable"); // it's know how to store data into imageable_id and imageable_type in image table. Front name can be differ such as abc_id, abc_type but should follow what column has after run migrate
+    }
+
+
     // get the most BlogPost by local query, remember scope prefix always omitted to withMostBlogPost
     public function scopeWithMostBlogPosts(Builder $query)
     {
