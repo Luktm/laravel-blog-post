@@ -34,6 +34,7 @@ class AddUserToBlogPostsTable extends Migration
      *
      * @return void
      */
+    // php artisan migrate:rollback will run down() method descendants
     public function down()
     {
         Schema::table('blog_posts', function (Blueprint $table) {

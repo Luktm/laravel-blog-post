@@ -30,6 +30,7 @@ class AddUserToCommentsTable extends Migration
      *
      * @return void
      */
+    // php artisan migrate:rollback will run down() method descendants
     public function down()
     {
         Schema::table('comments', function (Blueprint $table) {

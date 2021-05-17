@@ -182,10 +182,11 @@ class PostsController extends Controller
             // dump(Storage::path($name2));
             // therefore, at filesystems.php public->url->APP_URL has to change in .env at line 5
 
-            // image() function get from blogPost.php and save will  create a blog post and image will be created with blog_post_id column corresponding to created blog post id
+            // image() function get from blogPost.php and save will create a blog post where image will be created with blog_post_id column correspond to created blog post's id
             $blogPost->image()->save(
                 // string path url will be created and save into path column for image table
-                Image::create(["path" => $path])
+                // Image::create(["path" => $path])
+                Image::make(["path" => $path]) //  we can't save this new image model without assigning first those two fields. We can't leave imageable_id and imageable_type empty, this the way to solve it
             );
         }
         // die;
@@ -322,7 +323,7 @@ class PostsController extends Controller
         $validatedData = $request->validated(); // return arrary with validated data
         $post->fill($validatedData); // fill the column name in BlogPost fillable[]
 
-        // check has thumbnail file, update() post can actually store the as well same as store()
+        // check has thumbnail file, update() post can actually store as same as store()
         if($request->hasFile("thumbnail")) {
             $path = $request->file("thumbnail")->store("thumbnails");
 
@@ -335,8 +336,9 @@ class PostsController extends Controller
                 // save image
                 $post->image->save();
             } else {
-                $post->image()->save(
-                    Image::create(["path" => $path])
+                $post->image()->save( // so imageable_id and imageable_type will be set automatically by calling $post->image()->save()
+                    // Image::create(["path" => $path])// this will immediately save to database
+                    Image::make(["path" => $path])//  we can't save this new image model without assigning first those two fields. We can't leave imageable_id and imageable_type empty, this the way to solve it
                 );
             }
 

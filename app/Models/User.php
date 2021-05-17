@@ -52,6 +52,10 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    public function commentsOn() {
+        return $this->morpMany(Comment::class, "commentable")->latest();
+    }
+
     // episode 196, since created new AddPolymorphToImagesTable migration, blog_post table and user table use the same image table by running "php artisan make:migration AddPolymorphToImagesTable"
     // which contain imageable_id and imageable_type, so hasOne() got to change to morphOne();
     public function image() {

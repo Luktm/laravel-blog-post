@@ -26,7 +26,10 @@ class BlogPost extends Model
     public function comments()
     {
         // the latest can be added from here too, alternative is in PostController.php line 136
-        return $this->hasMany(Comment::class)->latest();
+        // return $this->hasMany(Comment::class)->latest();
+
+        // since blog_post table has polymorhpic relation to comment table of commentable_id & commentable_type, use morhMany
+        return $this->morphMany(Comment::class, "commentable")->latest(); // auto assign to commentable_id and commentable_type
     }
 
     // belongsTo() mean this or BlogPost table contain user foreign id column/field

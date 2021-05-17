@@ -31,6 +31,7 @@ class CreateProfilesTable extends Migration
      *
      * @return void
      */
+    // php artisan migrate:rollback will run down() method descendants
     public function down()
     {
         Schema::dropIfExists('profiles');
