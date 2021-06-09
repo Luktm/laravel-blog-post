@@ -39,7 +39,7 @@ class AddPolymorphToImagesTable extends Migration
             // this should create back the column of blog_post_id, look back the first created image table migration, because it's a foreign key to prevent error occur when delete this particular image binded to that blog_post_id
             $table->unsignedBigInteger('blog_post_id')->nullable(); //nullable mean it can accept empty/null, since first image migration run this unsignedBigInteger, we should rollback depend the what inside the up() method in tge first migration
             // drop against the morphs from up() method
-            $table->morphs("imageable");
+            $table->dropMorphs("imageable");
         });
     }
 }

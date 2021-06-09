@@ -8,6 +8,9 @@ use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PostTagController;
 use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserCommentController;
+use App\Mail\CommentPostedMarkdown;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -80,8 +83,17 @@ Route::resource('posts', PostsController::class);
 Route::get("posts/tag/{tag}", [PostTagController::class, "index"])->name("posts.tags.index");
 
 // only store function will be use, and resource("give a name")
+// want to see why got posts.comments and users.comments parameter, run "php artisan route:list", uri: posts/{post}/comments, name: posts.comments.store is self name it.
 Route::resource("posts.comments", PostCommentController::class)->only(["store"]);
+Route::resource("users.comments", UserCommentController::class)->only(["store"]); // so if type users/{user}/comments this sort of url, this web.php will redirect to this line instead of line 87
 Route::resource("users", UserController::class)->only(["show", "edit", "update"]);
+
+// this defined becuz of created mailtrap
+Route::get("mailable", function() {
+    $comment = Comment::find(1);
+    return new CommentPostedMarkdown($comment);
+    // this basically show the first comment
+});
 
 // use() pass the variable where the anonymous function variable is not set
 // Route::get('/posts', function() use($posts) {

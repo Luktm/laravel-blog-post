@@ -29,7 +29,7 @@ return [
     */
 
     'connections' => [
-
+        // in .env file QUEUE_CONNECTION=sync but change to QUEUE_CONNECTION=database, run "php artisan queue:table" and "php artisan migrate"
         'sync' => [
             'driver' => 'sync',
         ],

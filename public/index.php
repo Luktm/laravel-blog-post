@@ -53,3 +53,8 @@ $response = tap($kernel->handle(
 ))->send();
 
 $kernel->terminate($request, $response);
+
+// {luk}: added to access public_path()
+$app->bind('path.public', function() {
+    return __DIR__;
+});

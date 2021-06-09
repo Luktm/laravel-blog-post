@@ -78,19 +78,24 @@
 
         <h4>Comments</h4>
 
-        @include("comments.form")
+        {{-- @include("comments.form")  -- instead of include we add AppServiceProvider.php at components/comment-form.blade.php and pass the route array props --}}
+        @commentForm(["route" => route("posts.comments.store", ["post" => $post->id])])
+        @endcommentForm
 
-        @forelse($post->comments as $comment)
+        @commentList(["comments" => $post->comments])
+        @endcommentList
+
+        {{-- @forelse($post->comments as $comment)
             <p class="text-muted">
-                {{ $comment->content }}
+                {{ $comment->content }} --}}
                 {{-- , added {{ $comment->created_at->diffForHumans() }} --}}
-            </p>
+            {{-- </p> --}}
             {{-- specify full component template name in AppServiceProvider.php and component folder --}}
-            @updated(['date' => $comment->created_at, 'name' => $comment->user->name])
+            {{-- @updated(['date' => $comment->created_at, 'name' => $comment->user->name])
             @endupdated
         @empty
             <p>No comments yet!</p>
-        @endforelse
+        @endforelse --}}
     </div>
 
     {{-- find it from AppServiceProvider.php --}}

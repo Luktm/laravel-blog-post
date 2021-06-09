@@ -12,7 +12,14 @@ class Tag extends Model
     public function blogPosts()
     {
         // withTimestamps() call, the time declaration will create whenever relation created in database(created_at, updated_at), since CreateTagsTable has $table->timestamps();
-        return $this->belongsToMany(BlogPost::class)->withTimestamps()->as("tagged"); // as() see line 166
+
+        // return $this->belongsToMany(BlogPost::class)->withTimestamps()->as("tagged"); // as() see line 166
+
+        // taggeables taggable_type will appear App\BlogPost with taggable_id(blog_post_id) assigned
+        return $this->morphedByMany(BlogPost::class, "taggable")->withTimestamps()->as("tagged"); // taggable from 2021_05_31_rename..migration of the taggables table with the column call taggable_type & taggable_id the morph column prefix name
+
+        // php artisan tinker and run "Illuminate\Support\Str::plural("taggable");" to insert s behind to assume what laravel will do byas
+
         // * Episode 170
         // * This the way to query attach relation, either many to many, one to one nor one to many relation
         // >>> $blogPost->tags()->sync([1,2]);
@@ -202,5 +209,13 @@ class Tag extends Model
         //        },
         //      ],
         //    }
+    }
+
+    public function comments() {
+        // taggable from 2021_05_31_rename..migration of the taggables table with the column call taggable_type & taggable_id the morph column prefix name
+        // this->belongsToMany is self contain the list of foreign key
+        // withTimestamps() call, the time declaration will create whenever relation created in database, since CreateBlogPostTable has $table->timestamps();
+        // taggeables taggable_type will appear App\Comment with taggable_id(comment_id) assigned
+        return $this->morphedByMany(Comment::class, "taggable")->withTimestamps()->as("tagged");
     }
 }

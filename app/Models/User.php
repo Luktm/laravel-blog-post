@@ -53,7 +53,7 @@ class User extends Authenticatable
     }
 
     public function commentsOn() {
-        return $this->morpMany(Comment::class, "commentable")->latest();
+        return $this->morphMany(Comment::class, "commentable")->latest();
     }
 
     // episode 196, since created new AddPolymorphToImagesTable migration, blog_post table and user table use the same image table by running "php artisan make:migration AddPolymorphToImagesTable"
@@ -84,4 +84,18 @@ class User extends Authenticatable
             ->has('blogPosts', '>=', 2)
             ->orderBy('blog_posts_count', 'desc');
     }
+
+    // scope prefix name remove if we going to run it, User::thatHasCommentedOnPost($post)->get() and see line 96.
+    // * this was use in the NotifyUsersPostWasCommented.php.
+    public function scopeThatHasCommentedOnPost(Builder $query, BlogPost $post) { // post has in relationship
+         // has comments relationship at line 51 comments()
+        return $query->whereHas("comments", function($query) use($post) { // we working on comments relationship, each comment has commentable_id field
+            return $query->where("commentable_id", "=", $post->id) // check commentable_id is equal to current post id
+                    ->where("commentable_type", "=", BlogPost::class); // check if commentable_type is App\BlogPost
+        });
+    }
+    // after that run php artisan tinker
+    // $post = BlogPost::find(1);
+    // User::thatHasCommentedOnPost($post)->get();
+    // we can use that inside our job, go to NotifyUsersPostWasCommented.php in handle() method
 }

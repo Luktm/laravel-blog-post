@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 // use Illuminate\Support\Facades\DB;
-
+// PostsController.php, we create seperate controller to PostCommentController.php
 class PostsController extends Controller
 {
 
@@ -308,6 +308,8 @@ class PostsController extends Controller
     {
         $post = BlogPost::findOrFail($id);
 
+
+
         // Check inside Povider->AuthServiceProvider.php see whether
         // that user is eligible to edit the post base on their id
         // and use it in update().
@@ -316,14 +318,15 @@ class PostsController extends Controller
         //     abort(403, "you can't edit this blog post!");
         // }
 
-        // alternative Gate::denies, find it from AuthServiceProvider and BlogPostPolicy.php
+        // alternative Gate::denies from above line, find it from AuthServiceProvider and BlogPostPolicy.php
         $this->authorize('posts.update', $post);
 
 
-        $validatedData = $request->validated(); // return arrary with validated data
-        $post->fill($validatedData); // fill the column name in BlogPost fillable[]
-
+        $validatedData = $request->validated(); // return array with validated data ["title"=> "new text", "content"=> "new text"]
+        $post->fill($validatedData); // fill the column name in BlogPost.php fillable[]
+        // dd($validatedData);
         // check has thumbnail file, update() post can actually store as same as store()
+        // don't forget StorePost <input name="thumbnail"/> was inside to validate file type
         if($request->hasFile("thumbnail")) {
             $path = $request->file("thumbnail")->store("thumbnails");
 

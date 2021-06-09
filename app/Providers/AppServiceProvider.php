@@ -30,11 +30,13 @@ class AppServiceProvider extends ServiceProvider
         // components.badge get from component > badge.blade.ph
         // give it a name and call @badge(['type' => 'primary']) directive
         // @components('components.badge') has to provide path but @badge([]) provide in AppServiceProvider
-        Blade::aliasComponent('components.badge', 'badge');
+        Blade::aliasComponent('components.badge', 'badge'); // first parament is the file path, second parament is name to call
         Blade::aliasComponent('components.updated', 'updated');
         Blade::aliasComponent('components.card', 'card');
         Blade::aliasComponent('components.tags', 'tags');
         Blade::aliasComponent('components.errors', 'errors');
+        Blade::aliasComponent('components.comment-form', 'commentForm');
+        Blade::aliasComponent('components.comment-list', 'commentList');
 
         // find this from ActivityComposer.php, it pass ActivityComposer variable start in line 25 to specify view posts > index.blade.php & posts > partials > show.black.php
         view()->composer(["posts.index", "posts.show"], ActivityComposer::class);

@@ -10,6 +10,7 @@ use Tests\TestCase;
 
 class PostTest extends TestCase
 {
+    // ? REMEMBER EVEN I CHANGE ANYTHING IN phpunit.xml or database.php, don't worry too much, RefreshDatabse will take care of that
     use RefreshDatabase; // Recreate database structure by running all the migration on each test run from sqlite, refer database.php & phpunit.xml
 
     public function test_no_blog_post_when_nothing_in_database()
@@ -37,11 +38,20 @@ class PostTest extends TestCase
     public function test_see_1_blog_post_with_comments() {
 
         // Arrange
+        $user = $this->user();
+
         $post = $this->create_dummy_blog_post();
 
         // Generate 4 comments
+        // Comment::factory()->count(4)->create([
+        //     'blog_posts_id' => $post->id
+        // ]);
+
+        // bcuz of polymorphic
         Comment::factory()->count(4)->create([
-            'blog_posts_id' => $post->id
+            'commeteable_id' => $post->id,
+            "commentable_type" => BlogPost::class,
+            "user_id" => $user->id,
         ]);
 
         $response = $this->get('/posts');
