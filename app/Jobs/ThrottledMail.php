@@ -21,6 +21,9 @@ class ThrottledMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 15;
+    public $timeout = 10;
+
     public $user;
     public $mail;
 
@@ -50,7 +53,6 @@ class ThrottledMail implements ShouldQueue
             Mail::to($this->user)->send($this->mail);
         }, function () {
             // Could not obtain lock...
-
             return $this->release(5); // delay parameter for retry every 5 seconds
         });
     }

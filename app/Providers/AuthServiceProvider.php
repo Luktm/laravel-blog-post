@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // home.secret name is up to us to naming it
+        // home.secret name is up to us to naming it and then use it and any blade.php @can("home.secret") eloquent
         Gate::define('home.secret', function($user) {
             return $user->is_admin;
         });
@@ -62,6 +62,7 @@ class AuthServiceProvider extends ServiceProvider
         // Gate::define('posts.delete', [BlogPostPolicy::class, 'delete']);
 
         // alternative from above two posts.update and posts.delete
+        // so prefix posts and resource will handle method inside of BlogPostPolicy::class
         Gate::resource('posts', BlogPostPolicy::class);
         // posts.create, posts.view, posts.update, posts.delete
 

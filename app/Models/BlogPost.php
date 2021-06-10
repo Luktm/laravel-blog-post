@@ -130,6 +130,8 @@ class BlogPost extends Model
 
     // model event at episode 126, solve on when trying to delete BlogPost from the table which contain comments foreign key
 
+    // ? alternative way is look at the folder app/Observer/BlogPostObserver.php
+    // * php artisan make:observer BlogPostObserver --model=BlogPost
     public static function boot()
     {
 
@@ -141,31 +143,32 @@ class BlogPost extends Model
         // boot place below addGlobalScope() to see withTrashed() method
         parent::boot();
 
-        // consider it hard delete, mean completely delete from table
-        // unless Comment.php added soft delete with migration added and run,
-        // it will add deleted_at field instead
-        static::deleting(function (BlogPost $blogPost) {
-            $blogPost->comments()->delete();
+        // ! Since we have BlogPostObserver.php so we commented out code below
+        // // consider it hard delete, mean completely delete from table
+        // // unless Comment.php added soft delete with migration added and run,
+        // // it will add deleted_at field instead
+        // static::deleting(function (BlogPost $blogPost) {
+        //     $blogPost->comments()->delete();
 
-            // enable to PostController.php at line 330 Storage::delete() method
-            // $blogPost->image()->delete();
+        //     // enable to PostController.php at line 330 Storage::delete() method
+        //     // $blogPost->image()->delete();
 
-            // remove cache when blogpost was deleted
-            Cache::tags(["blog-post"])->forget("blog-post-{$blogPost->id}");
-        });
+        //     // remove cache when blogpost was deleted
+        //     Cache::tags(["blog-post"])->forget("blog-post-{$blogPost->id}");
+        // });
 
-        // when the post updating, we can reset the cache from this particular item, so user press edit post, it will reset the cache to avoid conflict
-        static::updating(function (BlogPost $blogPost) {
-            // it get the actual cache key name, such as Cache::remember("blog-post-{$id}") in PostController.php
-            // but here we can read from $blogPost->id
-            // in PostController.php because we have declare Cache::tags(["blog-post]) at line 167, before calling forget() the cache, we could possibly call the specify tags again then reset it.
-            Cache::tags(["blog-post"])->forget("blog-post-{$blogPost->id}");
-        });
+        // // when the post updating, we can reset the cache from this particular item, so user press edit post, it will reset the cache to avoid conflict
+        // static::updating(function (BlogPost $blogPost) {
+        //     // it get the actual cache key name, such as Cache::remember("blog-post-{$id}") in PostController.php
+        //     // but here we can read from $blogPost->id
+        //     // in PostController.php because we have declare Cache::tags(["blog-post]) at line 167, before calling forget() the cache, we could possibly call the specify tags again then reset it.
+        //     Cache::tags(["blog-post"])->forget("blog-post-{$blogPost->id}");
+        // });
 
-        // restore deleted blogpost contain comment
-        // where it has relation with that particular comment or comments
-        static::restoring(function (BlogPost $blogPost) {
-            $blogPost->comments()->restore();
-        });
+        // // restore deleted blogpost contain comment
+        // // where it has relation with that particular comment or comments
+        // static::restoring(function (BlogPost $blogPost) {
+        //     $blogPost->comments()->restore();
+        // });
     }
 }

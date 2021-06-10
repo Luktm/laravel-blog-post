@@ -57,11 +57,16 @@ class PostCommentController extends Controller
 
         // * job always use ClassJob::dispatch, it equvilent to line 52 of Mail::to($post->user)->queue()
         // this is keep retries to send the mail, throttle is controlling the flow
-        ThrottledMail::dispatch(new CommentPostedMarkdown($comment), $post->user);
+        ThrottledMail::dispatch(new CommentPostedMarkdown($comment), $post->user)
+            // high will executed first "php artisan queue:work --tries=3 --timeout=15 --queue=high,default,low", then post a comment
+            // which mean high should run first
+            ->onQueue("low");
 
         // pass comment into construtor,
         // * it located in app/Jobs folder, so should use dispatch() for every job class, remember run "php artisan queue:work --tries=3"
-        NotifyUsersPostWasCommented::dispatch($comment); // dispatch the job
+        NotifyUsersPostWasCommented::dispatch($comment)
+            // run "php artisan queue:work --tries=3 --timeout=15 --queue=high,default,low", which mean high should run first
+            ->onQueue("high");
         // * run "php artisan queue:work --tries=3" and post a new comment to see the process in terminal
         // * click NotifyUsersPostWasCommented.php see handle() method
 

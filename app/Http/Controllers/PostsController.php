@@ -372,8 +372,9 @@ class PostsController extends Controller
         //     abort(403, "you can't delete this blog post!");
         // }
 
-        // alternative Gate::denies, find it from AuthServiceProvider and BlogPostPolicy.php
-        $this->authorize('delete', $post);
+        // alternative Gate::denies, find it from AuthServiceProvider Gate::resources("post", []) and BlogPostPolicy.php
+        // check wheather the use is eligible for delete the post
+        $this->authorize('delete', $post); // "delete from BlogPostPoclicy delete() to see is it the user himself delete" the post?
 
         $post->delete();
 
