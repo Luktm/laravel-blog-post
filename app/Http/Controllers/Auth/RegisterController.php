@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+// to see event and listener go to EventServiceProvider.php
 class RegisterController extends Controller
 {
     /*
@@ -22,7 +23,7 @@ class RegisterController extends Controller
     |
     */
 
-    // ! luk: the route redirect was inside RegistersUsers's showRegistrationForm;
+    // ! luk: the route redirect was inside RegistersUsers.php 's showRegistrationForm;
     use RegistersUsers;
 
     /**

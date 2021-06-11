@@ -87,6 +87,7 @@ class User extends Authenticatable
 
     // scope prefix name remove if we going to run it, User::thatHasCommentedOnPost($post)->get() and see line 96.
     // * this was use in the NotifyUsersPostWasCommented.php.
+    // Builder $query is not count passing the argument tho, it's a build in, first argument was in second parament BlogPost $post
     public function scopeThatHasCommentedOnPost(Builder $query, BlogPost $post) { // post has in relationship
          // has comments relationship at line 51 comments()
         return $query->whereHas("comments", function($query) use($post) { // we working on comments relationship, each comment has commentable_id field
@@ -98,4 +99,9 @@ class User extends Authenticatable
     // $post = BlogPost::find(1);
     // User::thatHasCommentedOnPost($post)->get();
     // we can use that inside our job, go to NotifyUsersPostWasCommented.php in handle() method
+
+    public function scopeThatIsAnAdmin(Builder $query)
+    {
+        return $query->where("is_admin", true); // user table return is admin then do certain things
+    }
 }

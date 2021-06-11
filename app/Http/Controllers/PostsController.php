@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BlogPostPosted;
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
 use App\Models\Image;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -192,6 +191,8 @@ class PostsController extends Controller
         // die;
         //$post2 = BlogPost::make(); // create will save it, make need call save again
         // $post2->save();
+
+        event(new BlogPostPosted($blogPost));
 
         // can render in view layout.app about status
         $request->session()->flash('status', 'The blog post was created');

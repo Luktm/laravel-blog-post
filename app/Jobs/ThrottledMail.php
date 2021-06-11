@@ -32,6 +32,8 @@ class ThrottledMail implements ShouldQueue
      *
      * @return void
      */
+    // 1st argument which class files in Mail/* to send
+    // 2nd argument which user to send
     public function __construct(Mailable $mail, User $user)
     {
         $this->mail = $mail; // what class files in Mail/* to send

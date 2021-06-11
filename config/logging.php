@@ -34,10 +34,16 @@ return [
     |
     */
 
+    // ? php artisan tinker run Log:: method and see it in storage/log
+    // * Log::info("hello");
+    // * Log::warning("warning");
+    // * Log::error("something really bad");
+
     'channels' => [
+        // luk: set it to daily will more easy to read, it seperate the file
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['daily'], // started below can add to channal, multiple can add ["single", "daily"]
             'ignore_exceptions' => false,
         ],
 

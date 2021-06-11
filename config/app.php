@@ -1,5 +1,8 @@
 <?php
 
+// ? luk: localize go here config foler
+// * see timezone, locale, fallback_locale down here
+
 return [
 
     /*

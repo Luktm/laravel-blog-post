@@ -57,7 +57,7 @@ class NotifyUsersPostWasCommented implements ShouldQueue // * ShouldQueue is sto
         //     ],
         //   }
 
-        // * thatHasCommentedOnPost return above at line 44
+        // * thatHasCommentedOnPost come from User.php scopeThatHasCommentedOnPost, and it return above at line 44
         User::thatHasCommentedOnPost($this->comment->commentable) // commentable has commentable_type(BlogPost::class) and commetable_id
             ->get()
             ->filter(function(User $user) { // this User just like flutter get in model it would know which user, bcuz of relationship
