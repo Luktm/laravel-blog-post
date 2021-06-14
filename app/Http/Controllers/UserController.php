@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\CounterFacade;
 use App\Http\Requests\UpdateUser;
 use App\Models\Image;
 use App\Models\User;
+use App\Services\Counter;
 use Illuminate\Http\Request;
 
 // * "php artisan make:controller UserController --resource --model=User"
@@ -12,9 +14,14 @@ use Illuminate\Http\Request;
 // * and register UserPolicy in "AuthServiceProvider"
 class UserController extends Controller
 {
-    public function __construct() {
+    // private $counter;
+
+     // it will find a service container we have defined explicitly in AppServiceProvider $this->app->singleton()
+    public function __construct(Counter $counter) // dependency injection episode 243
+    {
         $this->middleware("auth"); // auth required
         $this->authorizeResource(User::class, "user"); // authorize certain action, it will use registered model policy for this particular model from UserPolicy.php as user()
+        // $this->counter = $counter;
     }
 
     /**
@@ -56,8 +63,23 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        // pass cache to Services/Counter to make code cleaner
+        // use resolve(), it's like getIt in flutter,
+        // * since it had passed data to construtor into AppServiceProvider.php
+        // $counter = resolve(Counter::class); // bcuz of dependency injection in __construtor(Counter counter), laravel auto assign
+
+
+
         // * remember in AuthServiceProvider at line 80, only admin can perform blog post update, delete ability.
-        return view("users.show", ["user" => $user]);
+        return view("users.show", [
+            "user" => $user,
+            // check how many user current view this profile, user->{$user->id} just a key to use for cache to recognize
+            // $this->counter is equal to __construtor(Counter $counter) {$this->counter = $counter}
+            // "counter" => $this->counter->increment("user->{$user->id}")
+            // * alternative way of Contract is Facade, put the Contract in Facade extend facade,
+            // and :: is static operator
+            "counter" => CounterFacade::increment("user->{$user->id}")
+        ]);
     }
 
     /**
@@ -79,7 +101,7 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUser $request, User $user)
+    public function update(UpdateUser $request, User $user) // ? do validation is better in Request UpdateUser.php class
     {
         // * remember in AuthServiceProvider at line 80, only admin can perform blog post update, delete ability.
         // * php artisan make:request UpdateUser and store it into image table
@@ -100,6 +122,18 @@ class UserController extends Controller
                 ); // this is one to one relation or polymorphic
             }
         }
+
+        // new migration added locale column to use,
+        // we certain that use has submit language from validator, and get it the valid data from request
+        // only we using [] and Rules::xx in UpdateUser request has to use get() where locale column used;
+        $user->locale = $request->get("locale");
+        $user->save();
+
+
+        // * after save it refresh data mean recall PostsController.php of __construct(),
+        // * where has middleware of LocaleMiddleware.php registered in Kernel.php and,
+        // * call the $this->middleware("key in Kernel.php $routeMiddleware") in PostsController.php of __construct() method
+
         // same as $request->session()->flash('status', 'Blog post was updated!');
         return redirect()
             ->back()

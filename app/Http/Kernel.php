@@ -37,6 +37,9 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
+            // * luk: remember add here to correspond $routeMiddleware = []
+            \App\Http\Middleware\LocaleMiddleware::class
         ],
 
         'api' => [
@@ -62,5 +65,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        // * luk: add key here middleware to access middle to controller like PostsContoller.php __construct()
+        "locale" => \App\Http\Middleware\LocaleMiddleware::class
     ];
 }

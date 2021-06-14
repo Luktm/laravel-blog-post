@@ -12,20 +12,41 @@
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-white border-bottom shadow-sm mb-3">
         <h5 class="my-0 mr-md-auto font-weight-normal">Laravel App</h5>
         <nav class="my-2 my-md-0 mr-md-3">
-            <a class="p-2 text-dark" href="{{ route('home.index') }}">Home</a>
+            {{-- <a class="p-2 text-dark" href="{{ route('home.index') }}">Home</a>
             <a class="p-2 text-dark" href="{{ route('home.contact') }}">Contact</a>
             <a class="p-2 text-dark" href="{{ route('posts.index') }}">Blog Posts</a>
-            <a class="p-2 text-dark" href="{{ route('posts.create') }}">Add</a>
+            <a class="p-2 text-dark" href="{{ route('posts.create') }}">Add</a> --}}
 
+
+            {{-- __("key", ["key" => props key]) get from de.json, en.json, es.json --}}
+            {{-- remember change language in app.php localize line --}}
+            <a class="p-2 text-dark" href="{{ route('home.index') }}">{{ __("Home") }}</a>
+            <a class="p-2 text-dark" href="{{ route('home.contact') }}">{{ __("Contact") }}</a>
+            <a class="p-2 text-dark" href="{{ route('posts.index') }}">{{ __("Blog Posts") }}</a>
+            <a class="p-2 text-dark" href="{{ route('posts.create') }}">{{ __("Add") }}</a>
             @guest
                 @if(Route::has('register'))
-                    <a class="p-2 text-dark" href="{{ route('register') }}">Register</a>
+                    <a class="p-2 text-dark" href="{{ route('register') }}">{{ __("Register") }}</a>
                 @endif
-                <a class="p-2 text-dark" href="{{ route('login') }}">Login</a>
+                <a class="p-2 text-dark" href="{{ route('login') }}">{{ __("Login") }}</a>
             @else
+                {{-- remember route("name") always go thru in users.create --}}
+                <a class="p-2 text-dark"
+                    href="{{ route("users.show", ["user" => Auth::user()->id]) }}"
+                >
+                    {{ __("Profile") }}
+                </a>
+
+                {{-- remember route("name") always go thru in users.create --}}
+                <a class="p-2 text-dark"
+                    href="{{ route("users.edit", ["user" => Auth::user()->id]) }}"
+                >
+                    {{ __("Edit Profile ") }}
+                </a>
+
                 <a class="p-2 text-dark" href="{{ route('logout') }}"
                     onclick="event.preventDefault();document.getElementById('logout-form').submit();"
-                >Logout ({{ Auth::user()->name }})</a>
+                >{{ __("Logout") }} ({{ Auth::user()->name }})</a>
 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST"
                     style="display: none">

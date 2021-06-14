@@ -47,12 +47,16 @@ was equivalent to @updated() --}}
 @tags(["tags" => $post->tags])@endtags
 
 
-
+{{--
 @if ($post->comments_count)
     <p>{{ $post->comments_count }} comments</p>
 @else
     <p> No comments yet!</p>
-@endif
+@endif --}}
+
+{{-- get from all translate lang/messages.key --}}
+{{-- equivalent to line 51 if statement $post->comments_count --}}
+{{ trans_choice("messages.comments", $post->comments_count) }}
 
 <div class="mb-3">
 

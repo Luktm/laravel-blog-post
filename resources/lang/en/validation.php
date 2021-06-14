@@ -1,5 +1,7 @@
 <?php
 
+// ? luk: most complicated and important
+
 return [
 
     /*

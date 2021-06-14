@@ -2,6 +2,11 @@
 
 // ? luk: localize go here config foler
 // * see timezone, locale, fallback_locale down here
+// * go resources/lang/* find available translate language
+// * to have the language, create a new folder
+
+// Episode 239
+// * Custom middleware, middleware is to check things LocaleMiddleware.php, Kernel.php is global to use in contorller, PostsController.php __construct()
 
 return [
 
@@ -83,6 +88,7 @@ return [
     |
     */
 
+    // luk: change here to es, de, en
     'locale' => 'en',
 
     /*

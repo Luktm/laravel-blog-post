@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\CounterContract;
 use App\Events\BlogPostPosted;
+use App\Facades\CounterFacade;
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
 use App\Models\Image;
+// use App\Services\Counter;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -15,10 +18,20 @@ use Illuminate\Support\Facades\Storage;
 class PostsController extends Controller
 {
 
-    public function __construct(){
+    // private $counter;
+
+    // it will find a service container we have defined explicitly in AppServiceProvider $this->app->singleton()
+    // public function __construct(Counter $counter) // dependency injection paraemeter
+    public function __construct(CounterContract $counter) // since it's using abstract class implement in Counter.php Services, we can use ContractCounter.php will do
+    {
         // auth needed before user can access these page/function
-        $this->middleware('auth')
+        $this->middleware('auth') // auth was inside $routeMiddleware in Kernel.php
             ->only(['create', 'store', 'edit', 'update', 'destroy']);
+
+        // See Kernel.php $routeMiddleware about locale key from LocaleMiddleware.php
+        // $this->middleware('locale'); // verify until locale changed in LocaleMiddleware.php
+
+        // $this->counter = $counter;
     }
 
     private $posts = [
@@ -223,56 +236,26 @@ class PostsController extends Controller
                 ->findOrFail($id);
         });
 
-        // epidose 162 store visited page number in post.show in PostController.php
-        $sessionId = session()->getId();
-        $counterKey = "blog-post-{$id}-counter";
-        $usersKey = "blog-post-{$id}-users";
+        // pass cache to Services/Counter to make code cleaner
+        // use resolve(), it's like getIt in flutter,
+        // * since it had passed data to construtor into AppServiceProvider.php and we could use it in any controller,
+        // * without having a new instance, so to speak
+        // * $counter = resolve(Counter::class); // $this is equal to __construtor(Counter $counter) {$this->counter = $counter}
 
-        // if $usersKey null return empty array []; epidose 162
-        $users = Cache::tags(["blog-post"])->get($usersKey, []);
-        $usersUpdate = [];
-        $difference = 0;
-        $now = now();
-
-        // loop epidose 162
-        foreach($users as $session => $lastVisit) {
-            if($now->diffInMinutes($lastVisit) >= 1) {
-                $difference--;
-            } else {
-                $usersUpdate[$session] = $lastVisit;
-            }
-        }
-
-        // $difference increment called here if user hasn't visited the page in the last mins. epidose 162
-        if(
-            !array_key_exists($sessionId, $users)
-            ||
-            $now->diffInMinutes($users[$sessionId]) >= 1
-        ) {
-            $difference++;
-        }
-
-        $usersUpdate[$sessionId] = $now;
-        // put and forever store key infinitly. epidose 162
-        Cache::tags(["blog-post"])->forever($usersKey, $usersUpdate);
-
-        // check $counterKey not exist. epidose 162
-        if(!Cache::tags(["blog-post"])->has($counterKey)) {
-            // if user hasn't been on the page, it make sense to set $counterKey to 1. epidose 162
-            Cache::tags(["blog-post"])->forever($counterKey, 1);
-        } else {
-            // if existed return integer by run increment if it's null
-            Cache::tags(["blog-post"])->increment($counterKey, $difference);
-        }
-
-        // this Cach::get($counterKey) sure exist, bcuz we did check if not exist set it to 1 as default value at line 194 to 196. epidose 162
-        // this is final step. epidose 162
-        $counter = Cache::tags(["blog-post"])->get($counterKey);
+        // testing purpose for AppServiceProvider between bind() and singleton
+        // dump(resolve(Counter::class));
+        // dump(resolve(Counter::class));
+        // dump(resolve(Counter::class));
 
         // abort_if(!isset($this->posts[$id]), 404);
         return view('posts.show', [
             'post' => $blogPost,
-            'counter' => $counter, // epidose 162
+            // $this->counter is equal to __construtor(Counter $counter) {$this->counter = $counter} and resolve();
+            // 'counter' => $this->counter->increment("blog-post-{$id}", ['blog-post']), // epidose 162
+
+            // * alternative way of Contract is Facade, put the Contract in Facade extend facade,
+            // and :: is static operator
+            'counter' => CounterFacade::increment("blog-post-{$id}", ['blog-post']), // epidose 162
 
             // scopeLatest in Comment.php fetch comment from new to old
             // or can do it in BlogPost.php hasMany()->latest()

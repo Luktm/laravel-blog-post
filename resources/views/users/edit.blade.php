@@ -26,8 +26,22 @@
 
             <div class="col-8">
                 <div class="form-group">
-                    <label for="">Name:</label>
+                    <label for="">{{ __("Name:") }}</label>
                     <input type="text" class="form-control" name="name" />
+                </div>
+
+                <div class="form-group">
+                    {{-- get from resource/lang/xx.json key name --}}
+                    {{-- remember put public const LOCALE =[] in User.php --}}
+                    <label for="">{{ __("Language") }}</label>
+                    <select class="form-control" name="locale" id="">
+                        {{-- loop from user.php LOCALES const variable by passing path--}}
+                        {{-- set key as $locale and value as $label --}}
+                        @foreach (App\Models\User::LOCALES as $locale => $label)
+                        {{--  ?: without space is do nothing, like ? :, but space remove --}}
+                            <option value="{{ $locale }}" {{ $user->locale !== $locale ?: "selected" }} >{{$label}}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 {{-- get from AppServiceProvider.php line 37 --}}

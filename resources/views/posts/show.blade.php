@@ -69,7 +69,9 @@
         --}}
         @tags(["tags" => $post->tags])@endtags
 
-        <p>Currently read by {{ $counter }} people</p>
+        {{-- <p>Currently read by {{ $counter }} people</p> --}}
+        {{-- visit resources/lang --}}
+        <p>{{ trans_choice("messages.people.reading", $counter) }}</p>  {{-- same as line 72 --}}
 
         {{-- @isset($post['has_comments'])
         <div>The post has some comment...using isset</div>

@@ -9,6 +9,16 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # luk: paste to here visit https://httpd.apache.org/docs/2.0/mod/mod_rewrite.html to learn more
+    # Episode 240
+    # /de/posts    -> /posts?locale=de
+    # /de          -> /?locale=de
+    # /es/posts/14 -> /posts/14?locale=es
+    # /de/users/1  -> /users/1?locale=de
+
+    # luk: then type url http:127.0.0.1:8000/posts?locale=de
+    RedirectMatch "^/(en|de|es)/?(.*)?" "/$2?locale=$1"
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
