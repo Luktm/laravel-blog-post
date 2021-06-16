@@ -8,6 +8,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ *  * php artisan make:test PostTest
+ */
 class PostTest extends TestCase
 {
     // ? REMEMBER EVEN I CHANGE ANYTHING IN phpunit.xml or database.php, don't worry too much, RefreshDatabse will take care of that
@@ -29,7 +32,7 @@ class PostTest extends TestCase
 
         // Assert
         $response->assertSeeText('New title');
-        $response->assertSeeText('No comments yet!');
+        $response->assertSeeText('No comments yet');
         $this->assertDatabaseHas('blog_posts', [
             'title'=> 'New title'
         ]);

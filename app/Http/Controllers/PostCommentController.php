@@ -6,6 +6,12 @@ use App\Http\Requests\StoreComment;
 use App\Events\CommentPosted;
 use App\Models\BlogPost;
 
+// this is an api, it's better give alias suffix Resource
+use App\Http\Resources\Comment as CommentResource;
+
+// php artisan make:controller UserCommentController
+// just like PostsController.php, we create seperate controller to PostCommentController.php
+// and look web.php only specify which controller method to use
 class PostCommentController extends Controller
 {
 
@@ -13,6 +19,30 @@ class PostCommentController extends Controller
     public function __construct() {
         // mean user has to authenticated before can perform store action
         $this->middleware("auth")->only(["store"]);
+    }
+
+    // API docs https://laravel.com/docs/8.x/responses#view-responses
+    public function index(BlogPost $post) {
+        // dump(is_array($post->comments)); //false, not array, it's a collection, but laravel know how to convert to array mean json term in laravel
+        // dump(get_class($post->comments)); // "Illuminate\Database\Eloquent\Collection"
+        // die(); // go to postman preview tab
+        // return $post->comments; // http://127.0.0.1:8000/posts/1/comments
+
+        // CommentResource from Resource/comment.php will change a little bit, it has "data": {""} wrapper
+        // this is userful for array collection
+
+        // return new CommentResource($post->comments->first());
+        // or return collection static method cannot insert new keyword
+        // *::collection return array nested object { data: [ { "id": 9, "content": "lorem ipsum" } ] }
+        // for api go api.php and Api/PostCommentController.php
+        return CommentResource::collection($post->comments()->with("user")->get());
+        // * to have user in json, we have to call $post->comments()->with("user")->get() in controller
+        // * remember if wanted to call more method must use () like $post->comments to $post->comments()
+
+
+        // if you have a query use comments()->with()->get(); always call get()
+        return $post->comments()->with("user")->get(); // return user model relation http://127.0.0.1:8000/posts/1/comments
+        // * hide some user information from json in User.php and Comment.php
     }
 
     // StoreComment request command "php artisan make:request StoreComment"

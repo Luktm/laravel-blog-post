@@ -5,9 +5,14 @@ namespace App\Policies;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-// * run "php artisan make:policy UserPolicy --model=User"
-// * from web.php and then run "php artisan route:list" On URI column, there will be wild cards {user} pass into view(User $user)
-// * Route::resource("users", UserController::class)->only(["show", "edit", "update"]);
+/**
+ * * run "php artisan make:policy UserPolicy --model=User"
+ * from web.php and then run "php artisan route:list" On URI column, there will be wild cards {user} pass into view(User $user)
+ * Route::resource("users", UserController::class)->only(["show", "edit", "update"]);
+ * this is restrict certain authorization, see it in AuthServiceProvider.php $policies
+ * * and then we use $this->authorize(model_instance) method in api or web controller to restrict action
+ */
+
 
 // ? remember this must be register in AuthServiceProvider at line 18
 

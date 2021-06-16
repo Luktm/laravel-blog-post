@@ -5,7 +5,9 @@ namespace Database\Factories;
 use App\Models\BlogPost;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-
+/**
+ * php artisan make:factory BlogPostFactory --model=BlogPost
+ */
 class BlogPostFactory extends Factory
 {
     /**

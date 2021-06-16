@@ -82,9 +82,13 @@ Route::resource('posts', PostsController::class);
 
 Route::get("posts/tag/{tag}", [PostTagController::class, "index"])->name("posts.tags.index");
 
-// only store function will be use, and resource("give a name")
-// want to see why got posts.comments and users.comments parameter, run "php artisan route:list", uri: posts/{post}/comments, name: posts.comments.store is self name it.
-Route::resource("posts.comments", PostCommentController::class)->only(["store"]);
+// * why we doing this, bcuz of seperate the controller of UserController + UserCommentController and PostController + PostCommentController
+// it call in blade file route("post.comments.index") or route("post.comments.store"), that's it
+// run php artisan route:list see how does the url look like with this "posts.comments" and call it in postman,
+// posts/{post}/comments/{comment} => posts and laravel know to remove s to add posts/{post} and,
+// . is slash /
+// posts/{post}/comments/{comment} =>  /{comment} wildcard laravel know which method to have show(), update() and destroy() gonna have it
+Route::resource("posts.comments", PostCommentController::class)->only(["index", "store"]);
 Route::resource("users.comments", UserCommentController::class)->only(["store"]); // so if type users/{user}/comments this sort of url, this web.php will redirect to this line instead of line 87
 Route::resource("users", UserController::class)->only(["show", "edit", "update"]);
 
@@ -120,54 +124,56 @@ Route::get("mailable", function() {
 // ])
 // ->name('posts.show');
 
-// grouping routes
-Route::get('/recent-posts/{days_ago?}', function($days_ago = 20){
-    return 'Posts from ' . $days_ago . ' days ago';
-})->name('posts.recent.index')->middleware('auth');
+// ? GROUPING ROUTE
+// Route::get('/recent-posts/{days_ago?}', function($days_ago = 20){
+//     return 'Posts from ' . $days_ago . ' days ago';
+// })->name('posts.recent.index')->middleware('auth');
 
-Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
+// // url: prefix /fun/get(xx)|post(xx), name: prefix fun.name(xx)
+// Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
 
-    // response json
-    Route::get('/responses', function() use($posts) {
-        return response($posts, 201)
-            // ->view()
-            ->header('Content-Type', 'application/json')
-            // check in browser f12 -> appliction -> cookie tab
-            ->cookie('MY_COOKIE', 'Luk Tze Ming', 3600);
-    })->name('responses');
+//     // response json
+//     Route::get('/responses', function() use($posts) {
+//         return response($posts, 201)
+//             // ->view()
+//             ->header('Content-Type', 'application/json')
+//             // check in browser f12 -> appliction -> cookie tab
+//             ->cookie('MY_COOKIE', 'Luk Tze Ming', 3600);
+//     })->name('responses');
 
-    // redirect to new page
-    Route::get('redirect', function() {
-        return redirect('/contact');
-    })->name('redirect');
+//     // redirect to new page
+//     Route::get('redirect', function() {
+//         return redirect('/contact');
+//     })->name('redirect');
 
-    // back to latest page
-    Route::get('back', function() {
-        return back();
-    })->name('back');
+//     // back to latest page
+//     Route::get('back', function() {
+//         return back();
+//     })->name('back');
 
-    // redirect and route with data given
-    Route::get('name-route', function() {
-        return redirect()->route('posts.show', ['id' => 1]);
-    })->name('name-route');
+//     // redirect and route with data given
+//     Route::get('name-route', function() {
+//         return redirect()->route('posts.show', ['id' => 1]);
+//     })->name('name-route');
 
-    // redirect and away to external url
-    Route::get('away', function() {
-        return redirect()->away('https://google.com');
-    })->name('away');
+//     // redirect and away to external url
+//     Route::get('away', function() {
+//         return redirect()->away('https://google.com');
+//     })->name('away');
 
-    // redirect and away to external url
-    Route::get('json', function() use($posts) {
-        return response()->json($posts);
-    })->name('json');
+//     // redirect and away to external url
+//     Route::get('json', function() use($posts) {
+//         return response()->json($posts);
+//     })->name('json');
 
-    // redirect and away to external url
-    Route::get('download', function() use($posts) {
-        // public_path() will access to public folder
-        // return response()->download(public_path('/tony-stark.jpeg'), 'face.jpg', []); // [] <- this is additional header in third argument
-        return response()->download(public_path('/tony-stark.jpeg'), 'face.jpg'); // [] <- this is additional header in third argument
-    })->name('download');
-});
+//     // redirect and away to external url
+//     Route::get('download', function() use($posts) {
+//         // public_path() will access to public folder
+//         // return response()->download(public_path('/tony-stark.jpeg'), 'face.jpg', []); // [] <- this is additional header in third argument
+//         return response()->download(public_path('/tony-stark.jpeg'), 'face.jpg'); // [] <- this is additional header in third argument
+//     })->name('download');
+// });
 
 
 
+// ? api route go api.php to see it

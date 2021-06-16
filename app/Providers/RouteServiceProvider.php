@@ -32,6 +32,7 @@ class RouteServiceProvider extends ServiceProvider
      * Define your route model bindings, pattern filters, etc.
      *
      * @return void
+     * luk: episode 255
      */
     public function boot()
     {
@@ -39,12 +40,13 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
             Route::prefix('api')
-                ->middleware('api')
+                // we can add new middleware to this Kernel middlewareGroups's api like what we did in Locale
+                ->middleware('api') // api from Kernel.php middlewareGroups = ["api" => []]
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
-                ->namespace($this->namespace)
+            Route::middleware('web') // * web from Kernel.php middlewareGroups = ["web" => []]
+                ->namespace($this->namespace) // * at line 3
                 ->group(base_path('routes/web.php'));
         });
 

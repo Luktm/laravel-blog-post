@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Policies\BlogPostPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -19,9 +20,10 @@ class AuthServiceProvider extends ServiceProvider
         'App\Models\Model' => 'App\Policies\ModelPolicy',
         // auto assign to $this->registerPolicies(),
         // it omit  $this->authorize('posts.update') to
-        // $this->authorize('update')
+        // * $this->authorize('update')
         'App\BlogPost' => 'App\Policies\BlogPostPolicy',
         'App\User' => 'App\Policies\UserPolicy', // and go web.php write Route.resource("users", )
+        'App\Comment' => 'App\Policies\CommentPolicy',
     ];
 
     /**
@@ -92,5 +94,6 @@ class AuthServiceProvider extends ServiceProvider
         //         return true;
         //     }
         // });
+
     }
 }

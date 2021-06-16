@@ -13,6 +13,8 @@ return [
     |
     */
 
+    // luk: for $this->middleware("auth"), default is web
+    // give it explicit name $this->middleware(auth:web) to help api.php resolve erro
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
@@ -37,7 +39,7 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver' => 'session', // luk: for web laravel will know web have to be authenticate
             'provider' => 'users',
         ],
 
@@ -45,6 +47,12 @@ return [
             'driver' => 'token',
             'provider' => 'users',
             'hash' => false,
+            // * luk added, so it accept http://127.0.0.1:8000/api/v1/posts/17/comments?api_token=value
+            // input_key is laravel own property
+            'input_key' => 'api_token',
+            // remember the migration need to have a same name beforehand
+            // put it here for the example purpose
+            'storage_key' => 'api_token',
         ],
     ],
 

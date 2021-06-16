@@ -2,17 +2,15 @@
 
 namespace App\Policies;
 
-use App\Models\BlogPost;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
- * * run "php artisan make:policy BlogPostPolicy --model=User"
- * this is restrict certain authorization, see it in AuthServiceProvider.php $policies
- * * and then we use $this->authorize(model_instance) method in api or web controller to restrict action
- * see AuthorizeRequests.php to see source code workflow
+ * php artisan make:policy CommentPolicy --model=Comment
+ * bind to Comment model
  */
-class BlogPostPolicy
+class CommentPolicy
 {
     use HandlesAuthorization;
 
@@ -31,12 +29,13 @@ class BlogPostPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\Comment  $comment
      * @return mixed
      */
-    public function view(User $user, BlogPost $blogPost)
+    public function view(User $user, Comment $comment)
     {
-        //
+        // everyone should be allow to view the comment
+        return true;
     }
 
     /**
@@ -47,7 +46,7 @@ class BlogPostPolicy
      */
     public function create(User $user)
     {
-        // not define mean not allow perform any action
+        // everyone should be allow to create one the comment
         return true;
     }
 
@@ -55,48 +54,50 @@ class BlogPostPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\Comment  $comment
      * @return mixed
      */
-    public function update(User $user, BlogPost $blogPost)
+    public function update(User $user, Comment $comment)
     {
-        // * update user itself blogpost
-        return $user->id === $blogPost->user_id;
+        // only the user has created the comment able to modify
+        return $comment->user_id === $user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\Comment  $comment
      * @return mixed
      */
-    public function delete(User $user, BlogPost $blogPost)
+    public function delete(User $user, Comment $comment)
     {
-        return $user->id === $blogPost->user_id;
+        // only the user has created the comment able to delete
+        return $comment->user_id === $user->id;
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\Comment  $comment
      * @return mixed
      */
-    public function restore(User $user, BlogPost $blogPost)
+    public function restore(User $user, Comment $comment)
     {
-        //
+        // we don't use soft delete for comment
+        return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\Models\Comment  $comment
      * @return mixed
      */
-    public function forceDelete(User $user, BlogPost $blogPost)
+    public function forceDelete(User $user, Comment $comment)
     {
-        //
+        return false;
     }
 }

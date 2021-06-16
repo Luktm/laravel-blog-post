@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreComment extends FormRequest
 {
     /**
+     * * php artisan make:request StoreComment
      * Determine if the user is authorized to make this request.
      *
      * @return bool

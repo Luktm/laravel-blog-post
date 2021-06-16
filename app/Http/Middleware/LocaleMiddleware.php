@@ -49,10 +49,10 @@ class LocaleMiddleware
             $locale = config("app.fallback_locale"); // app.php then fallback_locale from config folder user config() method
         }
 
-        App::setLocale($locale); // to better under middleware, open Kernel.php $routeMiddleware, set all the app with current selected locale lang
+        App::setLocale($locale); // to better understand middleware, open Kernel.php $routeMiddleware, set all the app with current selected locale lang
 
         return $next($request); // save selected lang to logon user into user table of locale column
     }
-
+    // * and use in controller $this->middleware('locale') to run it first
     // * for initial language setup when user visit the website open .htaccess from public directory
 }

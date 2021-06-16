@@ -42,6 +42,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\LocaleMiddleware::class
         ],
 
+        // api doesn't have session, so we don't have to create $this->middleware() for this
         'api' => [
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,

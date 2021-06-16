@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
+use App\Http\Resources\Comment as CommentResource;
+use Illuminate\Http\Resources\Json\JsonResource;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -72,6 +75,9 @@ class AppServiceProvider extends ServiceProvider
             'App\Contracts\CounterContract', // bind abstract class to specify Service, else it will return error
             Counter::class
         );
+
+        CommentResource::withoutWrapping(); // this only remove "data": wrapping json for particular resource
+        // JsonResource::withoutWrapping(); // this remove all "data": for all api return json
 
         // $this->app->bind(
         //     'App\Contracts\CounterContract',

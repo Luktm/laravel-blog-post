@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class UpdateUser extends FormRequest
 {
     /**
+     * * php artisan make:request UpdateUser
      * Determine if the user is authorized to make this request.
      *
      * @return bool

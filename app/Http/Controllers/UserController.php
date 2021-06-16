@@ -125,7 +125,7 @@ class UserController extends Controller
 
         // new migration added locale column to use,
         // we certain that use has submit language from validator, and get it the valid data from request
-        // only we using [] and Rules::xx in UpdateUser request has to use get() where locale column used;
+        // only we using [ Rule::in(array_keys(User::LOCALES)) ] in UpdateUser request has to use get() where locale name get from <form><select name="locale" id=""></select</form>;
         $user->locale = $request->get("locale");
         $user->save();
 

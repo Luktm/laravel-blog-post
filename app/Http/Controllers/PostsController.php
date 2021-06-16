@@ -25,7 +25,8 @@ class PostsController extends Controller
     public function __construct(CounterContract $counter) // since it's using abstract class implement in Counter.php Services, we can use ContractCounter.php will do
     {
         // auth needed before user can access these page/function
-        $this->middleware('auth') // auth was inside $routeMiddleware in Kernel.php
+        // specify "auth:web" from auth.php defaults=> ["guard" => "web"] mean only web must be authenticated
+        $this->middleware('auth:web') // auth was inside $routeMiddleware in Kernel.php
             ->only(['create', 'store', 'edit', 'update', 'destroy']);
 
         // See Kernel.php $routeMiddleware about locale key from LocaleMiddleware.php

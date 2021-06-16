@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     // check resources/lang/ folder to know what's going on
+    // this was use in UpdateUser.php from Request.php
     public const LOCALES = [
         "en" => "English",
         "es" => "Español",
@@ -33,12 +35,18 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be hidden for arrays.
-     *
+     * * luk: mean hiding attributes from json put it in here
      * @var array
      */
     protected $hidden = [
         'password',
         'remember_token',
+        "email",
+        "email_verified_at",
+        "created_at",
+        "updated_at",
+        "is_admin",
+        "locale"
     ];
 
     /**
