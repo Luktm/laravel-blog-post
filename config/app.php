@@ -194,7 +194,10 @@ return [
     | This array of class aliases will be registered when this application
     | is started. However, feel free to register as many as you wish as
     | the aliases are "lazy" loaded so they don't hinder performance.
-    |
+
+    * luk: aliases defined here, we use it as static method in other place,
+    * For instance, 'Session' => Illuminate\Support\Facades\Session::class defined here,
+    * we use it Session::put() or any Session method in other place
     */
 
     'aliases' => [
