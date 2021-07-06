@@ -79,6 +79,7 @@ was equivalent to @updated() --}}
     {{-- @auth check has authenticatad or not --}}
     @auth
         @if (!$post->trashed())
+            {{-- check from  Gate::resource('posts') delete method is user itself, if yes then he/she can delete--}}
             @can('delete', $post)
                 <form class="d-inline" action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST">
                     @csrf
